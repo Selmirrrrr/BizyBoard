@@ -1,19 +1,26 @@
 ﻿namespace Bizy.WinBizApi.Models
 {
+    using System;
+    using System.Linq;
+    using Extensions;
     using Newtonsoft.Json;
 
     public class BaseRequest
     {
-        [JsonProperty("Method")]
+        [JsonProperty("Method", Order = 1)]
         public string Method { get; set; }
+    }
 
-        [JsonProperty("Parameters")]
-        public BaseRequestParams Parameters { get; set; }
+    public class GetStockParams : BaseRequest
+    {
+        [JsonProperty("Parameters", Order = 10)]
+        public string[] Parameters { get; set; }
 
-        public BaseRequest(string method, BaseRequestParams parameters)
+        public GetStockParams(string cMethod, int nItem, DateTime? dDateEnd = null, DateTime? dDateStart = null, int? nWarehouse = null, DateTime? dExpiryEnd = null, DateTime? dExpiryStart = null)
         {
-            Method = method;
-            Parameters = parameters;
+            Method = "Stock";
+            Parameters = new[] { cMethod, nItem.ToString(), dDateEnd?.ToWinBizString(), dDateStart?.ToWinBizString(), nWarehouse?.ToString(), dExpiryEnd?.ToWinBizString(), dExpiryStart?.ToWinBizString() };
+            Parameters = Parameters.AsEnumerable().Where(p => p != null).ToArray();
         }
     }
 }

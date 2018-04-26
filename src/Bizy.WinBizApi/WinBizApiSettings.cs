@@ -1,4 +1,4 @@
-﻿namespace Bizy.Web.Models
+﻿namespace Bizy.WinBizApi
 {
     public struct WinBizApiSettings
     {

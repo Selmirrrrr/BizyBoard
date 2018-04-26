@@ -2,7 +2,9 @@ namespace Bizy.WinBizApi.Tests
 {
     using System.Threading.Tasks;
     using Services;
+    using Web.Services;
     using Xunit;
+    using static System.Environment;
 
     public class WinBizApiServiceUnitTests
     {
@@ -10,7 +12,13 @@ namespace Bizy.WinBizApi.Tests
 
         public WinBizApiServiceUnitTests()
         {
-            _service = new WinBizApiService("Company", "UserName", "Pwd", 1, 2017);
+            var settingsService = new SettingsService(new WinBizApiSettings(GetEnvironmentVariable("WINBIZ_API_KEY"),
+                GetEnvironmentVariable("WINBIZ_API_COMPANY"),
+                GetEnvironmentVariable("WINBIZ_API_USERNAME"),
+                GetEnvironmentVariable("WINBIZ_API_PASSWORD"),
+                "BgIAAACkAABSU0ExAAQAAAEAAQBZ3myd6ZQA0tUXZ3gIzu1sQ7larRfM5KFiYbkgWk+jw2VEWpxpNNfDw8M3MIIbbDeUG02y/ZW+XFqyMA/87kiGt9eqd9Q2q3rRgl3nWoVfDnRAPR4oENfdXiq5oLW3VmSKtcBl2KzBCi/J6bbaKmtoLlnvYMfDWzkE3O1mZrouzA==",
+                "https://api.winbizcloud.ch/"));
+            _service = new WinBizApiService(settingsService.WinBizApiSettings, 1, 2017);
         }
 
         [Fact]

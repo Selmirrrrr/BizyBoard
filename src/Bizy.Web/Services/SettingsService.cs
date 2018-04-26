@@ -1,8 +1,8 @@
 ﻿namespace Bizy.Web.Services
 {
-    using Models;
+    using WinBizApi;
 
-    public class SettingsService
+    public class SettingsService : ISettingsService
     {
         public WinBizApiSettings WinBizApiSettings { get; }
 

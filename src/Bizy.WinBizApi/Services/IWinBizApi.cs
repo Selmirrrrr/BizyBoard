@@ -25,6 +25,8 @@
         string Key { get; set; }
 
         [Post("Bizinfo")]
-        Task<BaseResponse> GetStock([Body] BaseRequest req);
+        Task<BaseResponse> GetStock([Body] GetStockParams req);
+
+        //Task<BaseResponse> Addresses([Body] BaseRequest req);
     }
 }

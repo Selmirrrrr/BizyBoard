@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Bizy.Web\Bizy.Web.csproj" />
     <ProjectReference Include="..\..\src\Bizy.WinBizApi\Bizy.WinBizApi.csproj" />
   </ItemGroup>
 

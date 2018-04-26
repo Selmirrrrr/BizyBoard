@@ -7,8 +7,8 @@ namespace Bizy.Web
     using Microsoft.AspNetCore.SpaServices.AngularCli;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Models;
     using Services;
+    using WinBizApi;
     using static System.Environment;
 
     public class Startup
@@ -32,7 +32,7 @@ namespace Bizy.Web
             Configuration.GetValue("WinBizApi:Url", "");
             GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            services.AddSingleton(new SettingsService(new WinBizApiSettings(GetEnvironmentVariable("WINBIZ_API_KEY"),
+            services.AddSingleton<ISettingsService>(new SettingsService(new WinBizApiSettings(GetEnvironmentVariable("WINBIZ_API_KEY"),
                                                                             GetEnvironmentVariable("WINBIZ_API_COMPANY"),
                                                                             GetEnvironmentVariable("WINBIZ_API_USERNAME"),
                                                                             GetEnvironmentVariable("WINBIZ_API_PASSWORD"),
