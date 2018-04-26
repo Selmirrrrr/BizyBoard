@@ -12,8 +12,5 @@
 
         [JsonProperty("ErrorsMsg")]
         public string ErrorsMsg { get; set; }
-
-        [JsonProperty("Value")]
-        public string Value { get; set; }
     }
 }

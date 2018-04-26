@@ -1,7 +1,9 @@
 ﻿namespace Bizy.WinBizApi.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using Extensions;
     using Models;
@@ -23,13 +25,16 @@
             _api.Key = winBizApiSettings.Key;
         }
 
-        public async Task<string> GetStock(int arCode)
+        public async Task<string> GetStock(int nItem, DateTime? dDateEnd = null, DateTime? dDateStart = null, int? nWarehouse = null, DateTime? dExpiryEnd = null, DateTime? dExpiryStart = null)
         {
             try
             {
-                var req = new GetStockParams("disponible", arCode, new DateTime(2017, 2, 20));
+                var parameters = new object[]
+                        {"disponible", nItem, dDateEnd?.ToWinBizString(), dDateStart?.ToWinBizString(), nWarehouse?.ToString(), dExpiryEnd?.ToWinBizString(), dExpiryStart?.ToWinBizString()}
+                    .AsEnumerable()
+                    .Where(p => p != null).ToArray();
 
-                var lol = JsonConvert.SerializeObject(req);
+                var req = new BaseRequest("stock", parameters);
 
                 var result = await _api.GetStock(req).ConfigureAwait(false);
 
@@ -38,6 +43,25 @@
             catch (Exception e)
             {
                 return e.ToString();
+            }
+        }
+
+        public async Task<IList<Address>> Adresses(DateTime? dDateSince = null)
+        {
+            try
+            {
+                var parameters = new object[] { dDateSince?.ToWinBizString() }.AsEnumerable().Where(p => p != null).ToArray();
+
+                var req = new BaseRequest("Addresses", parameters);
+
+                var result = await _api.Addresses(req).ConfigureAwait(false);
+
+                return result.Values;
+            }
+            catch (Exception e)
+            {
+                //TODO Log
+                return new List<Address>();
             }
         }
     }

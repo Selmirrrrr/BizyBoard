@@ -1,5 +1,6 @@
 namespace Bizy.WinBizApi.Tests
 {
+    using System.Linq;
     using System.Threading.Tasks;
     using Services;
     using Web.Services;
@@ -34,6 +35,14 @@ namespace Bizy.WinBizApi.Tests
 
             Assert.True(int.TryParse(response, out var stock));
             Assert.True(stock == 111);
+        }
+
+        [Fact]
+        public async Task Adresses_ReturnsAddressesList_WhenNoLimitDateIsSet()
+        {
+            var response = await _service.Adresses().ConfigureAwait(false);
+
+            Assert.True(response.Any());
         }
     }
 }
