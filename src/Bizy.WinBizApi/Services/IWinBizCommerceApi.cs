@@ -4,7 +4,7 @@
     using Models;
     using RestEase;
 
-    public interface IWinBizApi
+    public interface IWinBizCommerceApi
     {
         [Header("winbiz-companyname")]
         string CompanyName { get; set; }

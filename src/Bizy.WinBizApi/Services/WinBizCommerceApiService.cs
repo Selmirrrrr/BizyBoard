@@ -10,13 +10,13 @@
     using Newtonsoft.Json;
     using RestEase;
 
-    public class WinBizApiService
+    public class WinBizCommerceApiService
     {
-        private readonly IWinBizApi _api;
+        private readonly IWinBizCommerceApi _api;
 
-        public WinBizApiService(WinBizApiSettings winBizApiSettings, int companyId, int year)
+        public WinBizCommerceApiService(WinBizApiSettings winBizApiSettings, int companyId, int year)
         {
-            _api = RestClient.For<IWinBizApi>(winBizApiSettings.Url);
+            _api = RestClient.For<IWinBizCommerceApi>(winBizApiSettings.Url);
             _api.CompanyName = winBizApiSettings.Company;
             _api.Username = winBizApiSettings.Username;
             _api.Password = winBizApiSettings.Password.Encrypt(winBizApiSettings.EncryptionKey);
