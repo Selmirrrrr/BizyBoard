@@ -2,6 +2,7 @@ namespace Bizy.WinBizApi.Tests
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Services;
     using Web.Services;
     using Xunit;
@@ -19,7 +20,7 @@ namespace Bizy.WinBizApi.Tests
                 GetEnvironmentVariable("WINBIZ_API_PASSWORD"),
                 "BgIAAACkAABSU0ExAAQAAAEAAQBZ3myd6ZQA0tUXZ3gIzu1sQ7larRfM5KFiYbkgWk+jw2VEWpxpNNfDw8M3MIIbbDeUG02y/ZW+XFqyMA/87kiGt9eqd9Q2q3rRgl3nWoVfDnRAPR4oENfdXiq5oLW3VmSKtcBl2KzBCi/J6bbaKmtoLlnvYMfDWzkE3O1mZrouzA==",
                 "https://api.winbizcloud.ch/"));
-            _service = new WinBizCommerceApiService(settingsService.WinBizApiSettings, 1, 2017);
+            _service = new WinBizCommerceApiService(settingsService.WinBizApiSettings, 1, 2017, new Logger<WinBizCommerceApiService>(new LoggerFactory()));
         }
 
         [Fact]

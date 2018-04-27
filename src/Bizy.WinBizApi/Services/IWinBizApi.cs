@@ -4,7 +4,7 @@
     using Bizy.WinBizApi.Models;
     using Refit;
 
-    public interface IWinBizCommerceApi
+    public interface IWinBizApi
     {
         [Post("/Bizinfo")]
         Task<T> Test<T>([Body] BaseRequest req,

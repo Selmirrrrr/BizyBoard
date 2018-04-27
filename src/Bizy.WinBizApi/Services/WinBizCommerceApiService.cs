@@ -1,14 +1,11 @@
 ﻿namespace Bizy.WinBizApi.Services
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using System.Resources;
     using System.Threading.Tasks;
     using Extensions;
     using Bizy.WinBizApi.Models;
-    using Newtonsoft.Json;
+    using Microsoft.Extensions.Logging;
     using Refit;
 
     public class WinBizCommerceApiService
@@ -16,14 +13,16 @@
         private readonly WinBizApiSettings _winBizApiSettings;
         private readonly int _companyId;
         private readonly int _year;
-        private readonly IWinBizCommerceApi _api;
+        private readonly ILogger<WinBizCommerceApiService> _logger;
+        private readonly IWinBizApi _api;
 
-        public WinBizCommerceApiService(WinBizApiSettings winBizApiSettings, int companyId, int year)
+        public WinBizCommerceApiService(WinBizApiSettings winBizApiSettings, int companyId, int year, ILogger<WinBizCommerceApiService> logger)
         {
             _winBizApiSettings = winBizApiSettings;
             _companyId = companyId;
             _year = year;
-            _api = RestService.For<IWinBizCommerceApi>(winBizApiSettings.Url);
+            _logger = logger;
+            _api = RestService.For<IWinBizApi>(winBizApiSettings.Url);
         }
 
         [MethodName("Stock")]
@@ -52,7 +51,7 @@
             }
             catch (Exception e)
             {
-                //TODO Log
+                _logger.LogError(e, "La requête a échoué", request);
                 return default(T);
             }
         }
