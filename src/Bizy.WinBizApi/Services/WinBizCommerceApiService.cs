@@ -4,75 +4,57 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Resources;
     using System.Threading.Tasks;
     using Extensions;
-    using Models;
+    using Bizy.WinBizApi.Models;
     using Newtonsoft.Json;
-    using RestEase;
+    using Refit;
 
     public class WinBizCommerceApiService
     {
+        private readonly WinBizApiSettings _winBizApiSettings;
+        private readonly int _companyId;
+        private readonly int _year;
         private readonly IWinBizCommerceApi _api;
 
         public WinBizCommerceApiService(WinBizApiSettings winBizApiSettings, int companyId, int year)
         {
-            _api = RestClient.For<IWinBizCommerceApi>(winBizApiSettings.Url);
-            _api.CompanyName = winBizApiSettings.Company;
-            _api.Username = winBizApiSettings.Username;
-            _api.Password = winBizApiSettings.Password.Encrypt(winBizApiSettings.EncryptionKey);
-            _api.CompanyId = companyId;
-            _api.Year = year;
-            _api.Key = winBizApiSettings.Key;
+            _winBizApiSettings = winBizApiSettings;
+            _companyId = companyId;
+            _year = year;
+            _api = RestService.For<IWinBizCommerceApi>(winBizApiSettings.Url);
         }
 
         [MethodName("Stock")]
-        public async Task<string> Stock(int nItem, DateTime? dDateEnd = null, DateTime? dDateStart = null, int? nWarehouse = null, DateTime? dExpiryEnd = null, DateTime? dExpiryStart = null)
+        public async Task<ValueResponse> Stock(int nItem, DateTime? dDateEnd = null, DateTime? dDateStart = null, int? nWarehouse = null, DateTime? dExpiryEnd = null, DateTime? dExpiryStart = null)
         {
-            try
-            {
-                var parameters = new object[]
-                        {"disponible", nItem, dDateEnd?.ToWinBizString(), dDateStart?.ToWinBizString(), nWarehouse?.ToString(), dExpiryEnd?.ToWinBizString(), dExpiryStart?.ToWinBizString()}
-                    .AsEnumerable()
-                    .Where(p => p != null).ToArray();
+            var parameters = new object[]
+                    {"disponible", nItem, dDateEnd?.ToWinBizString(), dDateStart?.ToWinBizString(), nWarehouse?.ToString(), dExpiryEnd?.ToWinBizString(), dExpiryStart?.ToWinBizString()}
+                .AsEnumerable()
+                .Where(p => p != null).ToArray();
 
-                var req = new BaseRequest(parameters);
-
-                var result = await _api.Stock(req).ConfigureAwait(false);
-
-                return result.Value;
-            }
-            catch (Exception e)
-            {
-                return e.ToString();
-            }
+            return await RequestAsync<ValueResponse>(new BaseRequest(parameters));
         }
 
-        public async Task<IList<Address>> Addresses(DateTime? dDateSince = null)
+        public async Task<ListResponse<Address>> Addresses(DateTime? dDateSince = null)
+        {
+            var parameters = new object[] { dDateSince?.ToWinBizString() }.AsEnumerable().Where(p => p != null).ToArray();
+
+            return await RequestAsync<ListResponse<Address>>(new BaseRequest(parameters));
+        }
+
+        public async Task<T> RequestAsync<T>(BaseRequest request)
         {
             try
             {
-                var parameters = new object[] { dDateSince?.ToWinBizString() }.AsEnumerable().Where(p => p != null).ToArray();
-
-                var req = new BaseRequest(parameters);
-
-                var r = JsonConvert.SerializeObject(req);
-
-                var result = await _api.Test<ListResponse<Address>>(req).ConfigureAwait(false);
-                //var result = await _api.Addresses(req).ConfigureAwait(false);
-
-                return new List<Address>();
+                return await _api.Test<T>(request, _winBizApiSettings.Company, _winBizApiSettings.Username, _winBizApiSettings.Password.Encrypt(_winBizApiSettings.EncryptionKey), _companyId, _year, _winBizApiSettings.Key).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 //TODO Log
-                return new List<Address>();
+                return default(T);
             }
-        }
-
-        public string GetMethodName<T>()
-        {
-            if (typeof(T).GetCustomAttributes(typeof(MethodName), true).FirstOrDefault() is MethodName dnAttribute) return dnAttribute.Method;
-            return null;
         }
     }
 }

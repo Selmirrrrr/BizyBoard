@@ -27,7 +27,7 @@ namespace Bizy.WinBizApi.Tests
         {
             var response = await _service.Stock(2).ConfigureAwait(false);
 
-            Assert.True(int.TryParse(response, out var stock));
+            Assert.True(int.TryParse(response.Value, out var stock));
             Assert.True(stock == 111);
         }
 
@@ -36,7 +36,7 @@ namespace Bizy.WinBizApi.Tests
         {
             var response = await _service.Addresses().ConfigureAwait(false);
 
-            Assert.True(response.Any());
+            Assert.True(response.Values.Any());
         }
     }
 }
