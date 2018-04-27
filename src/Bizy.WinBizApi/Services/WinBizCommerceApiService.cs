@@ -25,7 +25,8 @@
             _api.Key = winBizApiSettings.Key;
         }
 
-        public async Task<string> GetStock(int nItem, DateTime? dDateEnd = null, DateTime? dDateStart = null, int? nWarehouse = null, DateTime? dExpiryEnd = null, DateTime? dExpiryStart = null)
+        [MethodName("Stock")]
+        public async Task<string> Stock(int nItem, DateTime? dDateEnd = null, DateTime? dDateStart = null, int? nWarehouse = null, DateTime? dExpiryEnd = null, DateTime? dExpiryStart = null)
         {
             try
             {
@@ -34,9 +35,9 @@
                     .AsEnumerable()
                     .Where(p => p != null).ToArray();
 
-                var req = new BaseRequest("stock", parameters);
+                var req = new BaseRequest(parameters);
 
-                var result = await _api.GetStock(req).ConfigureAwait(false);
+                var result = await _api.Stock(req).ConfigureAwait(false);
 
                 return result.Value;
             }
@@ -46,23 +47,32 @@
             }
         }
 
-        public async Task<IList<Address>> Adresses(DateTime? dDateSince = null)
+        public async Task<IList<Address>> Addresses(DateTime? dDateSince = null)
         {
             try
             {
                 var parameters = new object[] { dDateSince?.ToWinBizString() }.AsEnumerable().Where(p => p != null).ToArray();
 
-                var req = new BaseRequest("Addresses", parameters);
+                var req = new BaseRequest(parameters);
 
-                var result = await _api.Addresses(req).ConfigureAwait(false);
+                var r = JsonConvert.SerializeObject(req);
 
-                return result.Values;
+                var result = await _api.Test<ListResponse<Address>>(req).ConfigureAwait(false);
+                //var result = await _api.Addresses(req).ConfigureAwait(false);
+
+                return new List<Address>();
             }
             catch (Exception e)
             {
                 //TODO Log
                 return new List<Address>();
             }
+        }
+
+        public string GetMethodName<T>()
+        {
+            if (typeof(T).GetCustomAttributes(typeof(MethodName), true).FirstOrDefault() is MethodName dnAttribute) return dnAttribute.Method;
+            return null;
         }
     }
 }

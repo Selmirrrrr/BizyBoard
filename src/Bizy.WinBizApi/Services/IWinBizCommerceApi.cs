@@ -25,9 +25,12 @@
         string Key { get; set; }
 
         [Post("Bizinfo")]
-        Task<ValueResponse> GetStock([Body] BaseRequest req);
+        Task<ValueResponse> Stock([Body] BaseRequest req);
 
         [Post("Bizinfo")]
         Task<ListResponse<Address>> Addresses([Body] BaseRequest req);
+
+        [Post("Bizinfo")]
+        Task<T> Test<T>([Body] BaseRequest req);
     }
 }

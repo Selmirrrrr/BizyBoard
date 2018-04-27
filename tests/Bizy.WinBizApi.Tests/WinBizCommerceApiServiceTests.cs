@@ -25,7 +25,7 @@ namespace Bizy.WinBizApi.Tests
         [Fact]
         public async Task GetStock_ReturnsStock_WhenProductExists()
         {
-            var response = await _service.GetStock(2).ConfigureAwait(false);
+            var response = await _service.Stock(2).ConfigureAwait(false);
 
             Assert.True(int.TryParse(response, out var stock));
             Assert.True(stock == 111);
@@ -34,7 +34,7 @@ namespace Bizy.WinBizApi.Tests
         [Fact]
         public async Task Adresses_ReturnsAddressesList_WhenNoLimitDateIsSet()
         {
-            var response = await _service.Adresses().ConfigureAwait(false);
+            var response = await _service.Addresses().ConfigureAwait(false);
 
             Assert.True(response.Any());
         }

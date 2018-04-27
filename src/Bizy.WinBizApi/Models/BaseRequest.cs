@@ -1,5 +1,6 @@
 ﻿namespace Bizy.WinBizApi.Models
 {
+    using System.Runtime.CompilerServices;
     using Newtonsoft.Json;
 
     public class BaseRequest
@@ -10,7 +11,7 @@
         [JsonProperty("Parameters", Order = 10)]
         public object[] Parameters { get; set; }
 
-        public BaseRequest(string method, object[] parameters)
+        public BaseRequest(object[] parameters, [CallerMemberName] string method = null)
         {
             Method = method;
             Parameters = parameters;
