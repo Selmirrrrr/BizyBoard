@@ -5,23 +5,23 @@
     using System.Threading.Tasks;
     using Extensions;
     using Bizy.WinBizApi.Models;
+    using Enums;
     using Microsoft.Extensions.Logging;
     using Refit;
 
-    public partial class WinBizCommerceApiService
+    public class WinBizCommerceApiService
     {
-        /// <summary>
-        /// Test
-        /// </summary>
         public readonly WinBizApiSettings WinBizApiSettings;
+        private readonly string _appName;
         private readonly int _companyId;
         private readonly int _year;
         private readonly ILogger<WinBizCommerceApiService> _logger;
         private readonly IWinBizApi _api;
 
-        public WinBizCommerceApiService(WinBizApiSettings winBizApiSettings, int companyId, int year, ILogger<WinBizCommerceApiService> logger)
+        public WinBizCommerceApiService(WinBizApiSettings winBizApiSettings, string appName, int companyId, int year, ILogger<WinBizCommerceApiService> logger)
         {
             WinBizApiSettings = winBizApiSettings;
+            _appName = appName;
             _companyId = companyId;
             _year = year;
             _logger = logger;
@@ -85,11 +85,137 @@
 
         }
 
-        public async Task<T> RequestAsync<T>(BaseRequest request)
+        public async Task<T> RequestAsync<T>(BaseRequest request) where T : BaseResponse
         {
             try
             {
-                return await _api.Test<T>(request, WinBizApiSettings.Company, WinBizApiSettings.Username, WinBizApiSettings.Password.Encrypt(WinBizApiSettings.EncryptionKey), _companyId, _year, WinBizApiSettings.Key).ConfigureAwait(false);
+                var result = await _api.Test<T>(request,
+                                                WinBizApiSettings.Company,
+                                                WinBizApiSettings.Username,
+                                                WinBizApiSettings.Password.Encrypt(WinBizApiSettings.EncryptionKey),
+                                                _companyId, _year, WinBizApiSettings.Key).ConfigureAwait(false);
+
+                switch (result.ErrorLast ?? 0)
+                {
+                    case 109:
+                    case 202:
+                    case 239:
+                    case 297:
+                    case 490:
+                    case 514:
+                    case 734:
+                    case 933:
+                    case 963:
+                    case 981:
+                        result.ErrorLevel = ErrorLevelEnum.Developer;
+                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        break;
+                    case 193:
+                        result.ErrorLevel = ErrorLevelEnum.Customer;
+                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        break;
+                    case 314:
+                        result.ErrorLevel = ErrorLevelEnum.Customer;
+                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        break;
+                    case 803:
+                        result.ErrorLevel = ErrorLevelEnum.Customer;
+                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        break;
+                    case 335:
+                        result.ErrorLevel = ErrorLevelEnum.Customer;
+                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        break;
+                    case 670:
+                        result.ErrorLevel = ErrorLevelEnum.Customer;
+                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        break;
+                    case 111:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        break;
+                    //case 134:
+                    case 197:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 250:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 280:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    //case 297:
+                    case 299:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 327:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 420:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    //case 514:
+                    case 535:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 666:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 667:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 668:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 672:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 673:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 689:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 717:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 737:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 837:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 864:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 905:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                    case 999:
+                        result.ErrorLevel = ErrorLevelEnum.WinBiz;
+                        result.UserErrorMsg = "An error occurred in WinBIZ Cloud";
+                        break;
+                }
+
+                return result;
             }
             catch (Exception e)
             {

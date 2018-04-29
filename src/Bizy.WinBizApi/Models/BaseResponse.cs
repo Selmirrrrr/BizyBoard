@@ -1,16 +1,21 @@
 ﻿namespace Bizy.WinBizApi.Models
 {
+    using Enums;
     using Newtonsoft.Json;
 
     public class BaseResponse
     {
         [JsonProperty("ErrorsCount")]
-        public int ErrorsCount { get; set; }
+        public int? ErrorsCount { get; set; }
 
         [JsonProperty("ErrorLast")]
-        public string ErrorLast { get; set; }
+        public int? ErrorLast { get; set; }
 
         [JsonProperty("ErrorsMsg")]
         public string ErrorsMsg { get; set; }
+
+        public string UserErrorMsg { get; set; }
+
+        public ErrorLevelEnum ErrorLevel { get; set; }
     }
 }
