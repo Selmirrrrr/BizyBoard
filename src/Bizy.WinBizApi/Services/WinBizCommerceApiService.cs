@@ -112,23 +112,23 @@
                         break;
                     case 193:
                         result.ErrorLevel = ErrorLevelEnum.Customer;
-                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        result.UserErrorMsg = "Some of the following login details are missing: Name of the Company, ID of the Folder, Fiscal Year";
                         break;
                     case 314:
                         result.ErrorLevel = ErrorLevelEnum.Customer;
-                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        result.UserErrorMsg = "One of the login details is wrong or missing";
                         break;
                     case 803:
                         result.ErrorLevel = ErrorLevelEnum.Customer;
-                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        result.UserErrorMsg = "One of the login details is wrong or missing";
                         break;
                     case 335:
                         result.ErrorLevel = ErrorLevelEnum.Customer;
-                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        result.UserErrorMsg = $"This user is not authorized to use the application {_appName}";
                         break;
                     case 670:
                         result.ErrorLevel = ErrorLevelEnum.Customer;
-                        result.UserErrorMsg = $"An error occurred in the application {_appName}";
+                        result.UserErrorMsg = "The company selected by the user can't be found.";
                         break;
                     case 111:
                         result.ErrorLevel = ErrorLevelEnum.WinBiz;
