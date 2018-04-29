@@ -20,16 +20,15 @@ namespace Bizy.WinBizApi.Tests
                 GetEnvironmentVariable("WINBIZ_API_PASSWORD"),
                 "BgIAAACkAABSU0ExAAQAAAEAAQBZ3myd6ZQA0tUXZ3gIzu1sQ7larRfM5KFiYbkgWk+jw2VEWpxpNNfDw8M3MIIbbDeUG02y/ZW+XFqyMA/87kiGt9eqd9Q2q3rRgl3nWoVfDnRAPR4oENfdXiq5oLW3VmSKtcBl2KzBCi/J6bbaKmtoLlnvYMfDWzkE3O1mZrouzA==",
                 "https://api.winbizcloud.ch/"));
-            _service = new WinBizCommerceApiService(settingsService.WinBizApiSettings, 1, 2017, new Logger<WinBizCommerceApiService>(new LoggerFactory()));
+            _service = new WinBizCommerceApiService(settingsService.WinBizApiSettings, 2, 2018, new Logger<WinBizCommerceApiService>(new LoggerFactory()));
         }
 
         [Fact]
         public async Task GetStock_ReturnsStock_WhenProductExists()
         {
-            var response = await _service.Stock(2).ConfigureAwait(false);
+            var response = await _service.Stock(108).ConfigureAwait(false);
 
-            Assert.True(int.TryParse(response.Value, out var stock));
-            Assert.True(stock == 111);
+            Assert.True(response.Value == 100);
         }
 
         [Fact]
@@ -38,6 +37,38 @@ namespace Bizy.WinBizApi.Tests
             var response = await _service.Addresses().ConfigureAwait(false);
 
             Assert.True(response.Values.Any());
+        }
+
+        [Fact]
+        public async Task AdInfo_CustomerBalanceMethod_ReturnsValue()
+        {
+            var response = await _service.AdInfo(WinBizCommerceApiService.AdInfoMethodsEnum.CustomerBalance, 18).ConfigureAwait(false);
+
+            Assert.True(response.Value == 240565);
+        }
+
+        [Fact]
+        public async Task AdInfo_CustomerInvoicesOpen_ReturnsValue()
+        {
+            var response = await _service.AdInfo(WinBizCommerceApiService.AdInfoMethodsEnum.CustomerInvoicesOpen, 18).ConfigureAwait(false);
+
+            Assert.True(response.Value == 4);
+        }
+
+        [Fact]
+        public async Task AdInfo_SalesCount_ReturnsValue()
+        {
+            var response = await _service.AdInfo(WinBizCommerceApiService.AdInfoMethodsEnum.SalesCount, 18).ConfigureAwait(false);
+
+            Assert.True(response.Value == 4);
+        }
+
+        [Fact]
+        public async Task AdInfo_CustomerSalesItem_ReturnsValue()
+        {
+            var response = await _service.AdInfo(WinBizCommerceApiService.AdInfoMethodsEnum.CustomerSalesItem, 18, vStock: "SERVICES").ConfigureAwait(false);
+
+            Assert.True(response.Value == 021509M);
         }
     }
 }
