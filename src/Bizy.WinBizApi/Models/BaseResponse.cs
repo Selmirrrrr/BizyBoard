@@ -3,7 +3,7 @@
     using Enums;
     using Newtonsoft.Json;
 
-    public class BaseResponse
+    public class BaseResponse<T> : IBaseResponse
     {
         [JsonProperty("ErrorsCount")]
         public int? ErrorsCount { get; set; }
@@ -17,5 +17,8 @@
         public string UserErrorMsg { get; set; }
 
         public ErrorLevelEnum ErrorLevel { get; set; }
+
+        [JsonProperty("Value")]
+        public T Value { get; set; }
     }
 }
