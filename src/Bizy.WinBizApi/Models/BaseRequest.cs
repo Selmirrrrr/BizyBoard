@@ -11,7 +11,7 @@
         [JsonProperty("Parameters", Order = 10)]
         public object[] Parameters { get; set; }
 
-        public BaseRequest(object[] parameters, [CallerMemberName] string method = null)
+        public BaseRequest(object[] parameters = null, [CallerMemberName] string method = null)
         {
             Method = method;
             Parameters = parameters;
