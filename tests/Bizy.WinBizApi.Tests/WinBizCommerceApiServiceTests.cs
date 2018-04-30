@@ -1,5 +1,6 @@
 namespace Bizy.WinBizApi.Tests
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using Enums;
@@ -37,7 +38,7 @@ namespace Bizy.WinBizApi.Tests
         {
             var response = await _service.Addresses().ConfigureAwait(false);
 
-            Assert.True(response.Values.Any());
+            Assert.True(response.Value.Any());
         }
 
         [Fact]
@@ -70,6 +71,21 @@ namespace Bizy.WinBizApi.Tests
             var response = await _service.AdInfo(AdInfoMethodsEnum.CustomerSalesItem, 18, vStock: "SERVICES").ConfigureAwait(false);
 
             Assert.True(response.Value == 021509M);
+        }
+
+        [Fact]
+        public async Task AdInfo_Folders_ReturnsValue()
+        {
+            try
+            {
+                var folders = await _service.Folders();
+                Assert.True(folders.Value.Count > 1);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }
