@@ -29,21 +29,21 @@
             _api = RestService.For<IWinBizApi>(winBizApiSettings.Url);
         }
 
-        public async Task<BaseResponse<int>> Stock(int nItem, DateTime? dDateEnd = null, DateTime? dDateStart = null, int? nWarehouse = null, DateTime? dExpiryEnd = null, DateTime? dExpiryStart = null)
+        public async Task<Response<int>> Stock(int nItem, DateTime? dDateEnd = null, DateTime? dDateStart = null, int? nWarehouse = null, DateTime? dExpiryEnd = null, DateTime? dExpiryStart = null)
         {
             var parameters = new object[]
                     {"disponible", nItem, dDateEnd?.ToWinBizString(), dDateStart?.ToWinBizString(), nWarehouse?.ToString(), dExpiryEnd?.ToWinBizString(), dExpiryStart?.ToWinBizString()}
                 .AsEnumerable()
                 .Where(p => p != null).ToArray();
 
-            return await RequestAsync<BaseResponse<int>>(new BaseRequest(parameters));
+            return await RequestAsync<Response<int>>(new BaseRequest(parameters));
         }
 
-        public async Task<BaseResponse<List<Address>>> Addresses(DateTime? dDateSince = null)
+        public async Task<Response<List<Address>>> Addresses(DateTime? dDateSince = null)
         {
             var parameters = new object[] { dDateSince?.ToWinBizString() }.AsEnumerable().Where(p => p != null).ToArray();
 
-            return await RequestAsync<BaseResponse<List<Address>>>(new BaseRequest(parameters));
+            return await RequestAsync<Response<List<Address>>>(new BaseRequest(parameters));
         }
 
         /// <summary>
@@ -58,11 +58,11 @@
         /// <param name="vStock">This parameter is used only if cInfo is customersalesitem or supplierpurchasesitem.
         /// If the type of vStock is a string, the cInfo is applied to the Items being in the group specified in vStock.</param>
         /// <returns></returns>
-        public async Task<BaseResponse<decimal>> AdInfo(AdInfoMethodsEnum method, int nAdresse, DateTime? dDateEnd = null, DateTime? dDateStart = null, string vStock = null)
+        public async Task<Response<decimal>> AdInfo(AdInfoMethodsEnum method, int nAdresse, DateTime? dDateEnd = null, DateTime? dDateStart = null, string vStock = null)
         {
             var parameters = new object[] { method.ToDescriptionString(), nAdresse, dDateEnd?.ToWinBizString(), dDateStart?.ToWinBizString(), vStock }.AsEnumerable().Where(p => p != null).ToArray();
 
-            return await RequestAsync<BaseResponse<decimal>>(new BaseRequest(parameters));
+            return await RequestAsync<Response<decimal>>(new BaseRequest(parameters));
 
         }
 
@@ -78,15 +78,15 @@
         /// <param name="dDateStart">The transactions are selected starting from the date specified. The parameter is optional.
         /// If the parameter is missing all the transactions are selected</param>
         /// <returns></returns>
-        public async Task<BaseResponse<int>> AdInfo(AdInfoMethodsEnum method, int nAdresse, int vStock, DateTime? dDateEnd = null, DateTime? dDateStart = null)
+        public async Task<Response<int>> AdInfo(AdInfoMethodsEnum method, int nAdresse, int vStock, DateTime? dDateEnd = null, DateTime? dDateStart = null)
         {
             var parameters = new object[] { method.ToDescriptionString(), nAdresse, dDateEnd?.ToWinBizString(), dDateStart?.ToWinBizString(), vStock }.AsEnumerable().Where(p => p != null).ToArray();
 
-            return await RequestAsync<BaseResponse<int>>(new BaseRequest(parameters));
+            return await RequestAsync<Response<int>>(new BaseRequest(parameters));
 
         }
 
-        public async Task<BaseResponse<List<Dossier>>> Folders() => await RequestAsync<BaseResponse<List<Dossier>>>(new BaseRequest());
+        public async Task<Response<List<Dossier>>> Folders() => await RequestAsync<Response<List<Dossier>>>(new BaseRequest());
 
         public async Task<T> RequestAsync<T>(BaseRequest request) where T : IBaseResponse
         {

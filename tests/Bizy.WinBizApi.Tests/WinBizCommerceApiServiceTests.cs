@@ -74,7 +74,7 @@ namespace Bizy.WinBizApi.Tests
         }
 
         [Fact]
-        public async Task AdInfo_Folders_ReturnsValue()
+        public async Task Folders_ReturnsValue()
         {
             try
             {
