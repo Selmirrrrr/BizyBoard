@@ -1,14 +1,12 @@
 namespace Bizy.Web
 {
+    using Factories;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.SpaServices.AngularCli;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Services;
-    using WinBizApi;
-    using static System.Environment;
 
     public class Startup
     {
@@ -26,17 +24,7 @@ namespace Bizy.Web
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/dist");
-
-            Configuration.GetValue("WinBizApi:EncryptionKey", "");
-            Configuration.GetValue("WinBizApi:Url", "");
-            GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-            services.AddSingleton<ISettingsService>(new SettingsService(new WinBizApiSettings(GetEnvironmentVariable("WINBIZ_API_KEY"),
-                                                                            GetEnvironmentVariable("WINBIZ_API_COMPANY"),
-                                                                            GetEnvironmentVariable("WINBIZ_API_USERNAME"),
-                                                                            GetEnvironmentVariable("WINBIZ_API_PASSWORD"),
-                                                                            Configuration.GetValue("WinBizApi:EncryptionKey", ""),
-                                                                            Configuration.GetValue("WinBizApi:Url", ""))));
+            services.AddTransient<IOuinneBiseSharpFactory, OuinneBiseSharpFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
