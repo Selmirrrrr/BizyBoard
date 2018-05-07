@@ -12,6 +12,8 @@ const providers = [
   { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] }
 ];
 
+import 'hammerjs';
+
 if (environment.production) {
   enableProdMode();
 }

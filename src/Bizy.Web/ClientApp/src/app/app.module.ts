@@ -10,6 +10,10 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialAppModule } from './ngmaterial.module';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,6 +24,9 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserModule, 
+    BrowserAnimationsModule,
+    MaterialAppModule,
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
