@@ -16,8 +16,6 @@
 
         public string ErpPassword { get; set; }
 
-        public decimal WeeklyWorkingHours { get; set; }
-
         public int TenantId { get; set; }
 
         [InverseProperty("Users")]

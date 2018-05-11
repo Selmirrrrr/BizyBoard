@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Data", "BizyBoard
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Models", "BizyBoard.Models\BizyBoard.Models.csproj", "{F6671BD2-7909-4322-86A0-7B39570E3483}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizyBoard.Core", "BizyBoard.Core\BizyBoard.Core.csproj", "{BBD81B77-6DB1-49D7-BA83-09A86A1CC7A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Core", "BizyBoard.Core\BizyBoard.Core.csproj", "{BBD81B77-6DB1-49D7-BA83-09A86A1CC7A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

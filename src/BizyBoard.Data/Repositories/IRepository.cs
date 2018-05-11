@@ -14,10 +14,10 @@
         T GetSingle(Expression<Func<T, bool>> predicate);
         T GetSingle(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
         IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate);
-        void Add(T entity, AppUser user);
-        void Update(T entity, AppUser user);
-        void Delete(T entity, AppUser user);
-        void DeleteWhere(Expression<Func<T, bool>> predicate, AppUser user);
+        void Add(T entity);
+        void Update(T entity);
+        void Delete(T entity);
+        void DeleteWhere(Expression<Func<T, bool>> predicate);
         void Commit();
     }
 }

@@ -1,24 +1,38 @@
 namespace BizyBoard.Web
 {
+    using AutoMapper;
     using System;
+    using System.Net;
     using System.Text;
+    using Auth;
+    using Bizy.OuinneBiseSharp.Services;
+    using Core.Helpers;
+    using Data.Repositories;
     using Core.Services;
-    using Data;
     using Data.Context;
+    using Extensions;
+    using FluentValidation.AspNetCore;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.SpaServices.AngularCli;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.IdentityModel.Tokens;
     using Models.DbEntities;
+    using Swashbuckle.AspNetCore.Swagger;
 
     public class Startup
     {
+        private const string SecretKey = "db3OIsj+BXE9NZDy0t8W3TcNekrF+2d/1sFnWG4HnV8TZY30iTOdtVWJG8abWvB1GlOgJuQZdcF2Luqm/hccMw=="; // todo: get this from somewhere secure
+        private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -42,10 +56,7 @@ namespace BizyBoard.Web
                 //else options.UseSqlServer(Configuration["Data:SqlServerConnectionString"]);
             });
 
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlite(Configuration["Data:SqlLiteConnectionString"]);
-            });
+            services.AddDbContext<AppDbContext>(options => options.UseSqlite(Configuration["Data:SqlLiteConnectionString"], b => b.MigrationsAssembly("BizyBoard.Data")));
 
             services.AddTransient<AppDbContextSeeder>();
 
@@ -55,51 +66,117 @@ namespace BizyBoard.Web
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            services.AddSingleton<IJwtFactory, JwtFactory>();
+            services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
+
+            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+            
+            services.Configure<JwtIssuerOptions>(options =>
+            {
+                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
+            });
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+            });
+
+            var rolesService = new RolesService();
+            // api user claim policy
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(rolesService.Admin, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Role, rolesService.Admin));
+                options.AddPolicy(rolesService.TenantAdmin, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Role, rolesService.TenantAdmin));
+                options.AddPolicy(rolesService.TenantUser, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Role, rolesService.TenantUser));
+            });
+
             services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AdminDbContext>().AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 8;
-
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
                 options.Lockout.MaxFailedAccessAttempts = 10;
                 options.Lockout.AllowedForNewUsers = true;
                 options.User.RequireUniqueEmail = true;
             });
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                // Cookie settings
-                options.Cookie.HttpOnly = true;
-                options.Cookie.Expiration = TimeSpan.FromDays(150);
-                options.LoginPath = "/Account/Login"; // If the LoginPath is not set here, ASP.NET Core will default to /Account/Login
-                options.LogoutPath = "/Account/Logout"; // If the LogoutPath is not set here, ASP.NET Core will default to /Account/Logout
-                options.AccessDeniedPath = "/Account/AccessDenied"; // If the AccessDeniedPath is not set here, ASP.NET Core will default to /Account/AccessDenied
-                options.SlidingExpiration = true;
-            });
+            services.AddAutoMapper();
+            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
-            services.AddAuthentication(options =>
+
+            //services.ConfigureApplicationCookie(options =>
+            //{
+            //    // Cookie settings
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.Expiration = TimeSpan.FromDays(150);
+            //    options.LoginPath = "/Account/Login"; // If the LoginPath is not set here, ASP.NET Core will default to /Account/Login
+            //    options.LogoutPath = "/Account/Logout"; // If the LogoutPath is not set here, ASP.NET Core will default to /Account/Logout
+            //    options.AccessDeniedPath = "/Account/AccessDenied"; // If the AccessDeniedPath is not set here, ASP.NET Core will default to /Account/AccessDenied
+            //    options.SlidingExpiration = true;
+            //});
+
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(cfg =>
+            //{
+            //    cfg.RequireHttpsMetadata = false;
+            //    cfg.SaveToken = true;
+            //    cfg.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidIssuer = Configuration["Jwt:Issuer"],
+            //        ValidateIssuer = false,
+            //        ValidAudience = Configuration["Jwt:Issuer"],
+            //        ValidateAudience = false,
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
+            //        ClockSkew = TimeSpan.Zero
+            //    };
+            //});
+
+            services.AddSwaggerGen(c =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(cfg =>
-            {
-                cfg.RequireHttpsMetadata = false;
-                cfg.SaveToken = true;
-                cfg.TokenValidationParameters = new TokenValidationParameters
+                c.SwaggerDoc("v1", new Info { Title = "BizyBoard API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidateIssuer = false,
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    ValidateAudience = false,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
-                    ClockSkew = TimeSpan.Zero
-                };
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
             });
-
+                        
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<RolesService>();
+            services.AddTransient<OuinneBiseSharpService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,12 +192,31 @@ namespace BizyBoard.Web
                 app.UseHsts();
             }
 
+            app.UseExceptionHandler(
+                builder =>
+                {
+                    builder.Run(
+                        async context =>
+                        {
+                            context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                            var error = context.Features.Get<IExceptionHandlerFeature>();
+                            if (error != null)
+                            {
+                                context.Response.AddApplicationError(error.Error.Message);
+                                await context.Response.WriteAsync(error.Error.Message).ConfigureAwait(false);
+                            }
+                        });
+                });
+
             await seeder.Seed();
 
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseSwagger();
 
             app.UseMvc(routes =>
             {

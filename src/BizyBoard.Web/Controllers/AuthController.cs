@@ -7,6 +7,10 @@
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
+    using Auth;
+    using AutoMapper;
+    using Core.Services;
+    using Data.Context;
     using Data.Repositories;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -14,10 +18,12 @@
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
     using Models.Core;
     using Models.DbEntities;
     using Models.ViewModels;
+    using Newtonsoft.Json;
     using Services;
 
     [Route("api/[controller]")]
@@ -25,167 +31,113 @@
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly AdminDbContext _dbContext;
+        private readonly IJwtFactory _jwtFactory;
         private readonly ILogger<AuthController> _logger;
         private readonly IEmailService _emailService;
         private readonly ITenantsRepository _tenantRepo;
+        private readonly RolesService _rolesService;
+        private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly JwtIssuerOptions _jwtOptions;
 
         public AuthController(UserManager<AppUser> userManager, 
                                  SignInManager<AppUser> signInManager,
+                                 AdminDbContext dbContext,
+                                 IJwtFactory jwtFactory,
                                  IConfiguration configuration,
+                                 IOptions<JwtIssuerOptions> jwtOptions,
                                  IEmailService emailService,
                                  ITenantsRepository tenantRepo,
+                                 RolesService rolesService,
+                                 IMapper mapper,
                                  ILogger<AuthController> logger)
         {
             _configuration = configuration;
+            _jwtOptions = jwtOptions.Value;
             _logger = logger;
             _signInManager = signInManager;
+            _dbContext = dbContext;
+            _jwtFactory = jwtFactory;
             _emailService = emailService;
             _tenantRepo = tenantRepo;
+            _rolesService = rolesService;
+            _mapper = mapper;
             _userManager = userManager;
         }
 
-        [HttpPost("register")]
-        [AllowAnonymous]
-        // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([FromBody]RegisterViewModel model, string returnUrl = null)
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody]RegistrationViewModel model)
         {
-            var user = new AppUser
+            if (!ModelState.IsValid)
             {
-                UserName = model.Username,
-                Email = model.Email,
-                Firstname = model.Lastname,
-                Lastname = model.Lastname,
-            };
+                return BadRequest(ModelState);
+            }
+
+            var userIdentity = _mapper.Map<AppUser>(model);
 
             var tenant = new Tenant
             {
-                Name = model.Company
+                Name = model.Company,
+                CreatedByFullName = userIdentity.FullName,
+                LastUpdateByFullName = userIdentity.FullName,
+                CreationDate = DateTime.Now,
+                LastUpdateDate = DateTime.Now
             };
 
-            _tenantRepo.Add(tenant, user);
+            tenant = _dbContext.Tenants.Add(tenant).Entity;
+            _dbContext.SaveChanges();
 
-            user.Tenant = tenant;
+            userIdentity.Tenant = tenant;
 
-            try
-            {
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    // Add to roles
-                    var roleAddResult = await _userManager.AddToRoleAsync(user, "PowerUser");
-                    if (roleAddResult.Succeeded)
-                    {
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        var host = Request.Scheme + "://" + Request.Host;
-                        var callbackUrl = host + "?userId=" + user.Id + "&emailConfirmCode=" + code;
-                        var confirmationLink = "<a class='btn-primary' href=\"" + callbackUrl + "\">Confirm email address</a>";
-                        _logger.LogInformation(3, "User created a new account with password.");
-                        await _emailService.SendEmailAsync(model.Email, "Registration confirmation email", confirmationLink);
-                        return SignIn(user, new List<string>{"PowerUser"});
-                    }
-                }
-                AddErrors(result);
-            }
-            catch (Exception ex)
-            {
-                var test = ex;
-            }
+            var result = await _userManager.CreateAsync(userIdentity, model.Password);
+
+            if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+
+            var user = await _userManager.FindByEmailAsync(userIdentity.Email);
+
+            await _userManager.AddToRoleAsync(user, _rolesService.Admin);
+
+            tenant.CreatedBy = user;
+            tenant.LastUpdateBy = user;
+
+            _dbContext.Tenants.Update(tenant);
+
+            _dbContext.SaveChanges();
             
-            // If we got this far, something failed, redisplay form
-            return BadRequest(new BaseError(ModelState));
+            await _dbContext.SaveChangesAsync();
+
+            return new OkObjectResult("Account created");
         }
 
-        // POST: /Account/Login
         [HttpPost("login")]
-        [AllowAnonymous]
-        // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromBody]LoginViewModel model)
+        public async Task<IActionResult> Login([FromBody]CredentialsViewModel credentials)
         {
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-            if (result.Succeeded)
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                var roles = await _userManager.GetRolesAsync(user);
-                _logger.LogInformation(1, "User logged in.");
-                return SignIn(user, roles);
-            }
-            if (result.RequiresTwoFactor)
-                return RedirectToAction("SendCode", new { model.RememberMe });
-            if (!result.IsLockedOut) return BadRequest(new BaseError("Invalid login attempt."));
-            _logger.LogWarning(2, "User account locked out.");
-            return BadRequest(new BaseError("Lockout"));
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var identity = await GetClaimsIdentity(credentials.Email, credentials.Password);
+            if (identity == null) return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid username or password.", ModelState));
+
+            var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.Email, _jwtOptions);
+
+            return new OkObjectResult(jwt);
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
         {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation(4, "User logged out.");
-            return NoContent();
-        }
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password)) return await Task.FromResult<ClaimsIdentity>(null);
 
-        [HttpGet("SendCode")]
-        [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
-        {
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null) return BadRequest(new BaseError("Error"));
+            // get the user to verifty
+            var userToVerify = await _userManager.FindByNameAsync(userName);
 
-            var userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user);
-            var factorOptions = userFactors.Select(purpose => new SelectListItem { 
-                Text = purpose, 
-                Value = purpose 
-            }).ToList();
-            return Ok(new SendCodeViewModel { Providers = factorOptions, 
-                                              ReturnUrl = returnUrl, 
-                                              RememberMe = rememberMe });
-        }
+            if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
 
-        private string GenerateJwtToken(string email, AppUser user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
+            // check the credentials
+            if (!await _userManager.CheckPasswordAsync(userToVerify, password)) return await Task.FromResult<ClaimsIdentity>(null);
+            var roles = await _userManager.GetRolesAsync(userToVerify);
+            return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, userToVerify.TenantId, roles));
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-                }),
-
-                Expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"])),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"])), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var stoken = tokenHandler.CreateToken(tokenDescriptor);
-            var token = tokenHandler.WriteToken(stoken);
-
-            return token;
-        }
-
-        private IActionResult SignIn(AppUser user, IList<string> roles)
-        {
-            var userResult = new 
-            { 
-                User = new 
-                { 
-                    DisplayName = user.UserName, 
-                    Roles = roles,
-                    user.Id
-                }, 
-                Token = GenerateJwtToken(user.Id.ToString(), user)
-            };
-
-            return new ObjectResult(userResult);
-        }
-
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+            // Credentials are invalid, or account doesn't exist
         }
     }
 }

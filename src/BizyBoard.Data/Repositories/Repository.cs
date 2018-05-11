@@ -47,25 +47,25 @@
 
         public virtual IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate) => _context.Set<T>().Where(predicate);
 
-        public virtual void Add(T entity, AppUser user)
+        public virtual void Add(T entity)
         {
             _context.Entry(entity);
             _context.Set<T>().Add(entity);
         }
 
-        public virtual void Update(T entity, AppUser user)
+        public virtual void Update(T entity)
         {
             var dbEntityEntry = _context.Entry(entity);
             dbEntityEntry.State = EntityState.Modified;
         }
 
-        public virtual void Delete(T entity, AppUser user)
+        public virtual void Delete(T entity)
         {
             var dbEntityEntry = _context.Entry(entity);
             dbEntityEntry.State = EntityState.Deleted;
         }
 
-        public virtual void DeleteWhere(Expression<Func<T, bool>> predicate, AppUser user)
+        public virtual void DeleteWhere(Expression<Func<T, bool>> predicate)
         {
             IEnumerable<T> entities = _context.Set<T>().Where(predicate);
 

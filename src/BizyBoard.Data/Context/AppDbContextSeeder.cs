@@ -38,8 +38,6 @@
 
         public async Task Seed()
         {
-            await Migrate();
-
             if (_context.Roles.Any()) return;
 
             var rolesToAdd = new List<AppRole>(){
