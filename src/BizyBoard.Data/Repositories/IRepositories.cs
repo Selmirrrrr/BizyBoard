@@ -1,5 +1,6 @@
 ﻿namespace BizyBoard.Data.Repositories
 {
     using Models.DbEntities;
-    public interface ITenantsRepository : IEntityBaseRepository<Tenant> { }
+
+    public interface ITenantsRepository : IRepository<Tenant> { }
 }

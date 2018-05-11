@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Web", "BizyBoard.Web\BizyBoard.Web.csproj", "{2E8BFFB5-98D2-4A03-B44A-FB958969FB15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizyBoard.Data", "BizyBoard.Data\BizyBoard.Data.csproj", "{6BF5A743-9D86-4904-A67D-56C95FC8C49D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Data", "BizyBoard.Data\BizyBoard.Data.csproj", "{6BF5A743-9D86-4904-A67D-56C95FC8C49D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizyBoard.Models", "BizyBoard.Models\BizyBoard.Models.csproj", "{F6671BD2-7909-4322-86A0-7B39570E3483}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Models", "BizyBoard.Models\BizyBoard.Models.csproj", "{F6671BD2-7909-4322-86A0-7B39570E3483}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizyBoard.Core", "BizyBoard.Core\BizyBoard.Core.csproj", "{BBD81B77-6DB1-49D7-BA83-09A86A1CC7A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{F6671BD2-7909-4322-86A0-7B39570E3483}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6671BD2-7909-4322-86A0-7B39570E3483}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6671BD2-7909-4322-86A0-7B39570E3483}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBD81B77-6DB1-49D7-BA83-09A86A1CC7A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBD81B77-6DB1-49D7-BA83-09A86A1CC7A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBD81B77-6DB1-49D7-BA83-09A86A1CC7A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBD81B77-6DB1-49D7-BA83-09A86A1CC7A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
