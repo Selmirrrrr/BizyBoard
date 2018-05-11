@@ -1,5 +1,4 @@
-﻿
-namespace BizyBoard.Web.Controllers
+﻿namespace BizyBoard.Web.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +16,6 @@ namespace BizyBoard.Web.Controllers
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Tokens;
     using Models.Core;
-    using Models.DataTransfertObjects;
     using Models.DbEntities;
     using Models.ViewModels;
     using Services;
@@ -52,9 +50,6 @@ namespace BizyBoard.Web.Controllers
         // [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model, string returnUrl = null)
         {
-
-
-
             var user = new AppUser
             {
                 UserName = model.Username,
@@ -151,7 +146,6 @@ namespace BizyBoard.Web.Controllers
 
         private string GenerateJwtToken(string email, AppUser user)
         {
-            // var symmetricKey = Convert.FromBase64String(_configuration["Jwt:Secret"]);
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var tokenDescriptor = new SecurityTokenDescriptor

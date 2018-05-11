@@ -7,8 +7,6 @@
     {
         public EntityBase()
         {
-            CreatedBy = new AppUser(); 
-            LastUpdateBy = new AppUser(); 
         }
         
         [Key]

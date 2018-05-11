@@ -9,7 +9,6 @@
         [MaxLength(128)]
         public string Name { get; set; }
 
-        [InverseProperty("Tenant")]
         public virtual ICollection<AppUser> Users { get; set; }
     }
 }

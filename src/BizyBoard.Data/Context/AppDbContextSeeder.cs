@@ -13,27 +13,32 @@
     public class AppDbContextSeeder
     {
         private readonly AppDbContext _context;
+        private readonly AdminDbContext _adminDbContext;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly RolesService _rolesService;
         private readonly ILogger<AppDbContextSeeder> _logger;
 
-        public AppDbContextSeeder(AppDbContext context,
+        public AppDbContextSeeder(AppDbContext context, 
+            AdminDbContext adminDbContext,
             UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager,
             RolesService rolesService,
             ILogger<AppDbContextSeeder> logger)
         {
             _context = context;
+            _adminDbContext = adminDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _rolesService = rolesService;
             _logger = logger;
         }
 
+        public async Task Migrate() => await _context.Database.MigrateAsync();
+
         public async Task Seed()
         {
-            await _context.Database.MigrateAsync();
+            await Migrate();
 
             if (_context.Roles.Any()) return;
 
@@ -54,7 +59,10 @@
                 LastUpdateDate = DateTime.Now
             };
 
-            tenant = _context.Add(tenant).Entity;
+            //tenant = _context.Add(tenant).Entity;
+            tenant = _adminDbContext.Tenants.Add(tenant).Entity;
+            _adminDbContext.SaveChanges();
+            
 
             await _userManager.CreateAsync(new AppUser
             {
@@ -66,16 +74,16 @@
                 Tenant = tenant
             }, "P@ssw0rd!");
 
-            var user = await _userManager.FindByNameAsync("admin@admin.com");
+            var user = await _userManager.FindByNameAsync("info@bizy.ch");
 
             await _userManager.AddToRoleAsync(user, _rolesService.Admin);
 
             tenant.CreatedBy = user;
             tenant.LastUpdateBy = user;
 
-            _context.Tenants.Update(tenant);
+            _adminDbContext.Tenants.Update(tenant);
 
-            _context.SaveChanges();
+            _adminDbContext.SaveChanges();
         }
     }
 }

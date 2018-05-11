@@ -30,8 +30,10 @@
             builder.Entity<AppUserPhoto>().Property(t => t.RowVersion).IsConcurrencyToken();
             builder.Entity<AppUser>().HasOne(e => e.Tenant).WithMany(e => e.Users).HasForeignKey(e => e.TenantId);
 
-            builder.Entity<Tenant>().HasOne(t => t.CreatedBy);
             builder.Entity<AppUserPhoto>().HasOne(t => t.CreatedBy);
+
+            builder.Entity<Tenant>().HasOne(s => s.CreatedBy).WithMany().HasForeignKey(e => e.CreatedById);
+            builder.Entity<Tenant>().HasOne(s => s.LastUpdateBy).WithMany().HasForeignKey(e => e.LastUpdateById);
 
             base.OnModelCreating(builder);
         }
