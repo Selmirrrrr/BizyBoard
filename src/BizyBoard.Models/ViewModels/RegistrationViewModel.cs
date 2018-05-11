@@ -1,5 +1,9 @@
 ﻿namespace BizyBoard.Models.ViewModels
 {
+    using FluentValidation.Attributes;
+    using Validations;
+
+    [Validator(typeof(RegistrationViewModelValidator))]
     public class RegistrationViewModel
     {
         public string Firstname { get; set; }

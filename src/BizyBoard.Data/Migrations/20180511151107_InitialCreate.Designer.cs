@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BizyBoard.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180511091125_InitialCreate")]
+    [Migration("20180511151107_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,8 +92,6 @@ namespace BizyBoard.Data.Migrations
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
-
-                    b.Property<decimal>("WeeklyWorkingHours");
 
                     b.HasKey("Id");
 

@@ -1,10 +1,8 @@
 ﻿namespace BizyBoard.Models.Validations
 {
     using FluentValidation;
-    using FluentValidation.Attributes;
     using ViewModels;
 
-    [Validator(typeof(CredentialsViewModelValidator))]
     public class CredentialsViewModelValidator : AbstractValidator<CredentialsViewModel>
     {
         public CredentialsViewModelValidator()

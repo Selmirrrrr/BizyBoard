@@ -91,8 +91,6 @@ namespace BizyBoard.Data.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
-                    b.Property<decimal>("WeeklyWorkingHours");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")

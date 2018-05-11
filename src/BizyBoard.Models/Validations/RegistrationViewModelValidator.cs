@@ -1,10 +1,8 @@
 ﻿namespace BizyBoard.Models.Validations
 {
     using FluentValidation;
-    using FluentValidation.Attributes;
     using ViewModels;
 
-    [Validator(typeof(RegistrationViewModelValidator))]
     public class RegistrationViewModelValidator : AbstractValidator<RegistrationViewModel>
     {
         public RegistrationViewModelValidator()

@@ -1,66 +1,42 @@
 ﻿namespace BizyBoard.Web.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Linq;
     using System.Security.Claims;
-    using System.Text;
     using System.Threading.Tasks;
     using Auth;
     using AutoMapper;
     using Core.Services;
     using Data.Context;
-    using Data.Repositories;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Microsoft.IdentityModel.Tokens;
-    using Models.Core;
     using Models.DbEntities;
     using Models.ViewModels;
-    using Newtonsoft.Json;
-    using Services;
 
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
         private readonly AdminDbContext _dbContext;
         private readonly IJwtFactory _jwtFactory;
         private readonly ILogger<AuthController> _logger;
-        private readonly IEmailService _emailService;
-        private readonly ITenantsRepository _tenantRepo;
         private readonly RolesService _rolesService;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _configuration;
         private readonly JwtIssuerOptions _jwtOptions;
 
         public AuthController(UserManager<AppUser> userManager, 
-                                 SignInManager<AppUser> signInManager,
                                  AdminDbContext dbContext,
                                  IJwtFactory jwtFactory,
-                                 IConfiguration configuration,
                                  IOptions<JwtIssuerOptions> jwtOptions,
-                                 IEmailService emailService,
-                                 ITenantsRepository tenantRepo,
                                  RolesService rolesService,
                                  IMapper mapper,
                                  ILogger<AuthController> logger)
         {
-            _configuration = configuration;
             _jwtOptions = jwtOptions.Value;
             _logger = logger;
-            _signInManager = signInManager;
             _dbContext = dbContext;
             _jwtFactory = jwtFactory;
-            _emailService = emailService;
-            _tenantRepo = tenantRepo;
             _rolesService = rolesService;
             _mapper = mapper;
             _userManager = userManager;
@@ -96,7 +72,7 @@
 
             var user = await _userManager.FindByEmailAsync(userIdentity.Email);
 
-            await _userManager.AddToRoleAsync(user, _rolesService.Admin);
+            await _userManager.AddToRoleAsync(user, _rolesService.TenantAdmin);
 
             tenant.CreatedBy = user;
             tenant.LastUpdateBy = user;
@@ -107,10 +83,10 @@
             
             await _dbContext.SaveChangesAsync();
 
-            return new OkObjectResult("Account created");
+            return new OkObjectResult(await Tokens.GenerateJwt(await GetClaimsIdentity(userIdentity.Email, model.Password), _jwtFactory, userIdentity.Email, _jwtOptions));
         }
 
-        [HttpPost("login")]
+        [HttpPost]
         public async Task<IActionResult> Login([FromBody]CredentialsViewModel credentials)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

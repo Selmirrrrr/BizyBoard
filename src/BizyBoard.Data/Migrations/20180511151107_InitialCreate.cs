@@ -221,7 +221,6 @@ namespace BizyBoard.Data.Migrations
                     Lastname = table.Column<string>(nullable: true),
                     ErpUsername = table.Column<string>(nullable: true),
                     ErpPassword = table.Column<string>(nullable: true),
-                    WeeklyWorkingHours = table.Column<decimal>(nullable: false),
                     TenantId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
