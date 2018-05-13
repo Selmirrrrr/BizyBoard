@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http , Response, Headers, RequestOptions } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 
 import { UserRegistration } from '../models/user.registration.interface';
@@ -40,24 +40,25 @@ export class UserService extends BaseService {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.post(this.baseUrl + "/accounts", body, options).pipe(
+    return this.http.post(this.baseUrl + "api/auth/register", body, options).pipe(
       map(res => true), catchError(this.handleError)).source;
   }  
 
-   login(userName, password) {
+   login(email, password) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
     return this.http
       .post(
-      this.baseUrl + '/auth/login',
-      JSON.stringify({ userName, password }),{ headers }
+        this.baseUrl + 'api/auth/login',
+        JSON.stringify({ email, password }),{ headers }
       )
       .pipe(map(res => res.json()),
       map(res => {
         localStorage.setItem('auth_token', res.auth_token);
         this.loggedIn = true;
         this._authNavStatusSource.next(true);
+        console.log("test");
         return true;
       }),
       catchError(this.handleError));
@@ -71,22 +72,5 @@ export class UserService extends BaseService {
 
   isLoggedIn() {
     return this.loggedIn;
-  }
-
-  facebookLogin(accessToken:string) {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    let body = JSON.stringify({ accessToken });  
-    return this.http
-      .post(
-      this.baseUrl + '/externalauth/facebook', body, { headers })
-      .pipe(map(res => res.json()),
-      map(res => {
-        localStorage.setItem('auth_token', res.auth_token);
-        this.loggedIn = true;
-        this._authNavStatusSource.next(true);
-        return true;
-      }),
-      catchError(this.handleError));
   }
 }

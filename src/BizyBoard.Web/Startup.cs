@@ -70,7 +70,7 @@ namespace BizyBoard.Web
             services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
-            
+
             services.Configure<JwtIssuerOptions>(options =>
             {
                 options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
@@ -173,19 +173,16 @@ namespace BizyBoard.Web
                     Type = "apiKey"
                 });
             });
-                        
+
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<RolesService>();
             services.AddTransient<OuinneBiseSharpService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, IHostingEnvironment env, AppDbContextSeeder seeder)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             else
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -198,7 +195,7 @@ namespace BizyBoard.Web
                     builder.Run(
                         async context =>
                         {
-                            context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                             context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
                             var error = context.Features.Get<IExceptionHandlerFeature>();
@@ -209,8 +206,6 @@ namespace BizyBoard.Web
                             }
                         });
                 });
-
-            await seeder.Seed();
 
             app.UseAuthentication();
             app.UseHttpsRedirection();

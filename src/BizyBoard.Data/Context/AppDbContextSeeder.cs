@@ -38,7 +38,7 @@
 
         public async Task Seed()
         {
-            await Migrate();
+            // await Migrate();
 
             if (_context.Roles.Any()) return;
 

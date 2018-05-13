@@ -25,7 +25,7 @@
         private readonly IMapper _mapper;
         private readonly JwtIssuerOptions _jwtOptions;
 
-        public AuthController(UserManager<AppUser> userManager, 
+        public AuthController(UserManager<AppUser> userManager,
                                  AdminDbContext dbContext,
                                  IJwtFactory jwtFactory,
                                  IOptions<JwtIssuerOptions> jwtOptions,
@@ -45,10 +45,7 @@
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]RegistrationViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var userIdentity = _mapper.Map<AppUser>(model);
 
@@ -80,7 +77,7 @@
             _dbContext.Tenants.Update(tenant);
 
             _dbContext.SaveChanges();
-            
+
             await _dbContext.SaveChangesAsync();
 
             return new OkObjectResult(await Tokens.GenerateJwt(await GetClaimsIdentity(userIdentity.Email, model.Password), _jwtFactory, userIdentity.Email, _jwtOptions));
