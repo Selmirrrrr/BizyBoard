@@ -83,8 +83,7 @@ namespace BizyBoard.Web
                 ValidateIssuer = true,
                 ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
 
-                ValidateAudience = true,
-                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+                ValidateAudience = false,
 
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = _signingKey,
@@ -93,6 +92,8 @@ namespace BizyBoard.Web
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
+
+            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AdminDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
             {
@@ -115,7 +116,6 @@ namespace BizyBoard.Web
                 options.AddPolicy(rolesService.TenantUser, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Role, rolesService.TenantUser));
             });
 
-            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AdminDbContext>().AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -128,39 +128,6 @@ namespace BizyBoard.Web
 
             services.AddAutoMapper();
             services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
-
-
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    // Cookie settings
-            //    options.Cookie.HttpOnly = true;
-            //    options.Cookie.Expiration = TimeSpan.FromDays(150);
-            //    options.LoginPath = "/Account/Login"; // If the LoginPath is not set here, ASP.NET Core will default to /Account/Login
-            //    options.LogoutPath = "/Account/Logout"; // If the LogoutPath is not set here, ASP.NET Core will default to /Account/Logout
-            //    options.AccessDeniedPath = "/Account/AccessDenied"; // If the AccessDeniedPath is not set here, ASP.NET Core will default to /Account/AccessDenied
-            //    options.SlidingExpiration = true;
-            //});
-
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //.AddJwtBearer(cfg =>
-            //{
-            //    cfg.RequireHttpsMetadata = false;
-            //    cfg.SaveToken = true;
-            //    cfg.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidIssuer = Configuration["Jwt:Issuer"],
-            //        ValidateIssuer = false,
-            //        ValidAudience = Configuration["Jwt:Issuer"],
-            //        ValidateAudience = false,
-            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
-            //        ClockSkew = TimeSpan.Zero
-            //    };
-            //});
 
             services.AddSwaggerGen(c =>
             {
@@ -212,6 +179,11 @@ namespace BizyBoard.Web
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TimeCHeet API V1");
+            });
 
             app.UseMvc(routes =>
             {

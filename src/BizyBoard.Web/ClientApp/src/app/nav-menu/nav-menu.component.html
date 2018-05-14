@@ -18,13 +18,23 @@
                     </a>
                 </li>
                 <li [routerLinkActive]='["link-active"]'>
-                    <a [routerLink]='["/counter"]' (click)='collapse()'>
-                        <span class='glyphicon glyphicon-education'></span> Counter
+                    <a [routerLink]='["/fetch-data"]' (click)='collapse()'>
+                        <span class='glyphicon glyphicon-th-list'></span> Board
                     </a>
                 </li>
                 <li [routerLinkActive]='["link-active"]'>
-                    <a [routerLink]='["/fetch-data"]' (click)='collapse()'>
-                        <span class='glyphicon glyphicon-th-list'></span> Fetch data
+                    <a [routerLink]='["/login"]' (click)='collapse()'>
+                        <span class='glyphicon glyphicon-education'></span> Login
+                    </a>
+                </li>
+                <li [routerLinkActive]='["link-active"]'>
+                    <a [routerLink]='["/register"]' (click)='collapse()'>
+                        <span class='glyphicon glyphicon-education'></span> Register
+                    </a>
+                </li>
+                <li>
+                    <a (click)='logout()'>
+                        <span class='glyphicon glyphicon-th-list'></span> Logout
                     </a>
                 </li>
             </ul>

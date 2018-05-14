@@ -44,17 +44,16 @@ export function tokenGetter() {
       config: {
         tokenGetter: tokenGetter,
         whitelistedDomains: ['localhost:3001, localhost:52003'],
-        blacklistedRoutes: ['localhost:3001/auth/']
+        blacklistedRoutes: ['localhost:3001/login/']
       }
     }),
     HttpModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent, canActivate: [AuthGuard] },
-      { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'register', component: RegistrationFormComponent },
-      { path: 'login', component: LoginFormComponent },
+      { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
+      { path: 'register', component: RegistrationFormComponent, canDeactivate: [AuthGuard] },
+      { path: 'login', component: LoginFormComponent, canDeactivate: [AuthGuard] },
     ])
   ],
   providers: [UserService, AuthGuard],

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserService } from '../shared/services/user.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,6 +8,14 @@ import { Component } from '@angular/core';
 })
 export class NavMenuComponent {
   isExpanded = false;
+
+  constructor(private userService: UserService)
+  {
+  }
+
+  logout() {
+    this.userService.logout();       
+  }
 
   collapse() {
     this.isExpanded = false;
