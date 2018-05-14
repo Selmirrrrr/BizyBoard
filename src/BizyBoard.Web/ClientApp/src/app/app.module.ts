@@ -18,6 +18,13 @@ import { RegistrationFormComponent } from './account/registration-form/registrat
 
 import { AccountModule }  from './account/account.module';
 import { UserService } from './shared/services/user.service';
+import { AuthGuard } from './auth.guard';
+
+import { JwtModule } from '@auth0/angular-jwt';
+
+export function tokenGetter() {
+  return localStorage.getItem('auth_token');
+}
 
 @NgModule({
   declarations: [
@@ -33,17 +40,24 @@ import { UserService } from './shared/services/user.service';
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['localhost:3001, localhost:52003'],
+        blacklistedRoutes: ['localhost:3001/auth/']
+      }
+    }),
     HttpModule,
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
+      { path: 'counter', component: CounterComponent, canActivate: [AuthGuard] },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'register', component: RegistrationFormComponent },
       { path: 'login', component: LoginFormComponent },
     ])
   ],
-  providers: [UserService],
+  providers: [UserService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -12,6 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 // Add the RxJS Observable operators we need in this app.
 import { map } from 'rxjs/operators';
 import { catchError } from 'rxjs/operators';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable()
 
@@ -26,13 +27,20 @@ export class UserService extends BaseService {
 
   private loggedIn = false;
 
-  constructor(private http: Http, @Inject('BASE_URL') baseUrl: string) {
+  constructor(private http: Http, @Inject('BASE_URL') baseUrl: string, public jwtHelper: JwtHelperService) {
     super();
-    this.loggedIn = !!localStorage.getItem('auth_token');
+    this.loggedIn = this.isAuthenticated();
     // ?? not sure if this the best way to broadcast the status but seems to resolve issue on page refresh where auth status is lost in
     // header component resulting in authed user nav links disappearing despite the fact user is still logged in
     this._authNavStatusSource.next(this.loggedIn);
     this.baseUrl = baseUrl;
+  }
+  
+  public isAuthenticated(): boolean {
+    const token = localStorage.getItem('auth_token');
+    // Check whether the token is expired and return
+    // true or false
+    return !this.jwtHelper.isTokenExpired(token);
   }
 
     register(email: string, password: string, firstName: string, lastName: string, winBiuUsername: string, winBizPassword: string, company: string): Observable<UserRegistration> {

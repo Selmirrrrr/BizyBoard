@@ -7,7 +7,7 @@ namespace BizyBoard.Web.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Models.ViewModels;
 
-    [Authorize(Policy = "Admin")]
+    [Authorize]
     [Route("api/[controller]")]
     public class SampleDataController : Controller
     {
