@@ -48,9 +48,10 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       this.userService.login(value.email, value.password)
         .pipe(finalize(() => this.isRequesting = false))
         .subscribe(
-        result => {         
+        result => {
+          console.log(result);
           if (result) {
-             this.router.navigate(['/counter']);             
+             this.router.navigate(['/fetch-data']);             
           }
         },
         error => this.errors = error);

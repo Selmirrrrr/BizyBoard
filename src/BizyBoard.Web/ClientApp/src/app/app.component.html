@@ -1,10 +1,18 @@
-<div class='container-fluid'>
-  <div class='row'>
-    <div class='col-sm-3' ng-hide="true">
-      <app-nav-menu></app-nav-menu>
-    </div>
-    <div class='col-sm-9 body-content'>
-      <router-outlet></router-outlet>
+<div>
+  <mat-toolbar color="primary">
+    <a [routerLink]='["/"]'>BizyBoard</a>
+    <!-- This fills the remaining space of the current row -->
+    <span class="example-fill-remaining-space"></span>
+    <a *ngIf="isNotLoggedIn()" mat-button [routerLink]='["/login"]'>Login</a>
+    <a *ngIf="isNotLoggedIn()" mat-button [routerLink]='["/register"]'>Register</a>
+    <a *ngIf="isLoggedIn()" mat-button (click)='logout()'>Logout</a>
+  </mat-toolbar>
+
+  <div class='container-fluid'>
+    <div class='row'>
+      <div class='col-sm-12 body-content'>
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
 </div>

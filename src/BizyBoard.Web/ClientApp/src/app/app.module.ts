@@ -18,7 +18,7 @@ import { RegistrationFormComponent } from './account/registration-form/registrat
 
 import { AccountModule }  from './account/account.module';
 import { UserService } from './shared/services/user.service';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard, AuthGuardLogin } from './auth.guard';
 
 import { JwtModule } from '@auth0/angular-jwt';
 import { MaterialModule } from './app.material.module';
@@ -52,13 +52,13 @@ export function tokenGetter() {
     FormsModule,
     MaterialModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
-      { path: 'register', component: RegistrationFormComponent, canDeactivate: [AuthGuard] },
-      { path: 'login', component: LoginFormComponent, canDeactivate: [AuthGuard] },
+      { path: 'register', component: RegistrationFormComponent, canActivate: [AuthGuardLogin] },
+      { path: 'login', component: LoginFormComponent, canActivate: [AuthGuardLogin] },
     ])
   ],
-  providers: [UserService, AuthGuard],
+  providers: [UserService, AuthGuard, AuthGuardLogin],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
