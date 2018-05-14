@@ -147,7 +147,7 @@ namespace BizyBoard.Web
 
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<RolesService>();
-            services.AddTransient<OuinneBiseSharpService>();
+            services.AddTransient<IOuinneBiseSharpFactory, OuinneBiseSharpFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
