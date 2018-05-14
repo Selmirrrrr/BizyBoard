@@ -21,6 +21,7 @@ import { UserService } from './shared/services/user.service';
 import { AuthGuard } from './auth.guard';
 
 import { JwtModule } from '@auth0/angular-jwt';
+import { MaterialModule } from './app.material.module';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -49,6 +50,7 @@ export function tokenGetter() {
     }),
     HttpModule,
     FormsModule,
+    MaterialModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
