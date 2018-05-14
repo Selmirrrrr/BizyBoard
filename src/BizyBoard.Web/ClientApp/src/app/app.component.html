@@ -1,14 +1,16 @@
-<div>
-  <mat-toolbar color="primary">
-    <a [routerLink]='["/"]'>BizyBoard</a>
-    <!-- This fills the remaining space of the current row -->
-    <span class="example-fill-remaining-space"></span>
-    <a *ngIf="isNotLoggedIn()" mat-button [routerLink]='["/login"]'>Login</a>
-    <a *ngIf="isNotLoggedIn()" mat-button [routerLink]='["/register"]'>Register</a>
-    <a *ngIf="isLoggedIn()" mat-button (click)='logout()'>Logout</a>
-  </mat-toolbar>
+<div class="page-wrap">
+  <header role="banner">
+    <mat-toolbar color="primary">
+      <button mat-button [routerLink]='["/"]'>BizyBoard</button>
+      <!-- This fills the remaining space of the current row -->
+      <span class="example-fill-remaining-space"></span>
+      <a *ngIf="isNotLoggedIn()" mat-button [routerLink]='["/login"]'>Login</a>
+      <a *ngIf="isNotLoggedIn()" mat-button [routerLink]='["/register"]'>Register</a>
+      <a *ngIf="isLoggedIn()" mat-button (click)='logout()'><mat-icon>exit_to_app</mat-icon> Logout</a>
+    </mat-toolbar>
+  </header>
 
-  <div class='container-fluid'>
+  <div class='container-fluid wrapper'>
     <div class='row'>
       <div class='col-sm-12 body-content'>
         <router-outlet></router-outlet>

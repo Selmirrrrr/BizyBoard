@@ -6,7 +6,11 @@ body {
     font-family: Roboto, sans-serif;
   }
   
-
+  mat-card {
+    max-width: 80%;
+    margin: 2em auto;
+    text-align: center;
+  }
   
   mat-toolbar-row {
     justify-content: space-between;
@@ -23,12 +27,4 @@ body {
     /* This fills the remaining space, by using flexbox. 
        Every toolbar row uses a flexbox row layout. */
     flex: 1 1 auto;
-  }
-
-  md-card {
-    padding: 20px;
-  }
-  
-  footer {
-    background-color: #ccc;
   }

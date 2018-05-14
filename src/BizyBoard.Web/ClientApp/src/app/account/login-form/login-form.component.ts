@@ -18,7 +18,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   brandNew: boolean;
-  errors: string;
+  errors: string[] = [];
   isRequesting: boolean;
   submitted: boolean = false;
   credentials: Credentials = { email: '', password: '' };
@@ -43,7 +43,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   login({ value, valid }: { value: Credentials, valid: boolean }) {
     this.submitted = true;
     this.isRequesting = true;
-    this.errors='';
+    this.errors=[];
     if (valid) {
       this.userService.login(value.email, value.password)
         .pipe(finalize(() => this.isRequesting = false))
@@ -54,7 +54,19 @@ export class LoginFormComponent implements OnInit, OnDestroy {
              this.router.navigate(['/fetch-data']);             
           }
         },
-        error => this.errors = error);
+        errors => {
+          // this.successfulSave = false;
+          if (errors.status === 400) {
+              // handle validation error
+              let validationErrorDictionary = JSON.parse(errors.text());
+              for (var fieldName in validationErrorDictionary) {
+                  if (validationErrorDictionary.hasOwnProperty(fieldName)) {
+                    this.errors.push(validationErrorDictionary[fieldName]);
+                  }
+              }
+          } else {
+              this.errors.push("something went wrong!");
+          }});
     }
   }
 }

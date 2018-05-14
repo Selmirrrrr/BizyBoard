@@ -1,6 +1,7 @@
 ﻿namespace BizyBoard.Web.Controllers
 {
     using System;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using Auth;
@@ -9,6 +10,7 @@
     using Data.Context;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore.Internal;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Models.DbEntities;
@@ -46,6 +48,8 @@
         public async Task<IActionResult> Register([FromBody]RegistrationViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (_userManager.Users.Any(u => u.NormalizedEmail == model.Email)) 
+                return new BadRequestObjectResult(Errors.AddErrorToModelState("account_creation_failure", "Email déjà existant.", ModelState));
 
             var userIdentity = _mapper.Map<AppUser>(model);
 
@@ -65,7 +69,12 @@
 
             var result = await _userManager.CreateAsync(userIdentity, model.Password);
 
-            if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+            if (!result.Succeeded)
+            {
+                _dbContext.Tenants.Remove(tenant);
+                await _dbContext.SaveChangesAsync();
+                return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+            }
 
             var user = await _userManager.FindByEmailAsync(userIdentity.Email);
 

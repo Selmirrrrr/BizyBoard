@@ -68,7 +68,7 @@ export class UserService extends BaseService {
         this._authNavStatusSource.next(true);
         return true;
       }),
-      catchError(this.handleError));
+      catchError(this.handleError)).source;
   }
 
   logout() {

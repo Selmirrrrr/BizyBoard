@@ -17,10 +17,10 @@
             IsError = true;
         }
 
-        public BaseError(ModelStateDictionary modelState)
+        public BaseError(ModelStateDictionary modelState, string message = null)
         {
             IsError = true;
-            Message = "Validation Failed";
+            Message = message ?? "Validation Failed";
             Errors = modelState.Keys.SelectMany(key => modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage))).ToList();
         }
     }

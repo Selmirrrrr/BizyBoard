@@ -14,7 +14,7 @@ import { finalize } from 'rxjs/operators';
 })
 
 export class RegistrationFormComponent implements OnInit {
-  errors: string;  
+  errors: string[] = [];
   isRequesting: boolean;
   submitted: boolean = false;
 
@@ -26,7 +26,7 @@ export class RegistrationFormComponent implements OnInit {
   registerUser({ value, valid }: { value: UserRegistration, valid: boolean }) {
     this.submitted = true;
     this.isRequesting = true;
-    this.errors='';
+    this.errors= [];
     if(valid)
     {
       this.userService.register(value.email,value.password,value.firstName,value.lastName, value.winBizUsername, value.winBizPassword, value.company).pipe(
@@ -36,7 +36,19 @@ export class RegistrationFormComponent implements OnInit {
                   result  => {if(result){
                       this.router.navigate(['/login'],{queryParams: {brandNew: true,email:value.email}});                         
                   }},
-                  errors =>  this.errors = errors);
+                  errors => {
+                    // this.successfulSave = false;
+                    if (errors.status === 400) {
+                        // handle validation error
+                        let validationErrorDictionary = JSON.parse(errors.text());
+                        for (var fieldName in validationErrorDictionary) {
+                            if (validationErrorDictionary.hasOwnProperty(fieldName)) {
+                              this.errors.push(validationErrorDictionary[fieldName]);
+                            }
+                        }
+                    } else {
+                        this.errors.push("something went wrong!");
+                    }});
     }      
   } 
 }

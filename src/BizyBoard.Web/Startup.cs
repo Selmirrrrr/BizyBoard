@@ -26,6 +26,7 @@ namespace BizyBoard.Web
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.IdentityModel.Tokens;
     using Models.DbEntities;
+    using Models.Validations;
     using Swashbuckle.AspNetCore.Swagger;
 
     public class Startup
@@ -116,10 +117,13 @@ namespace BizyBoard.Web
                 options.AddPolicy(rolesService.TenantUser, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Role, rolesService.TenantUser));
             });
 
-
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
                 options.Lockout.MaxFailedAccessAttempts = 10;
                 options.Lockout.AllowedForNewUsers = true;
@@ -127,7 +131,7 @@ namespace BizyBoard.Web
             });
 
             services.AddAutoMapper();
-            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CredentialsViewModelValidator>());
 
             services.AddSwaggerGen(c =>
             {
