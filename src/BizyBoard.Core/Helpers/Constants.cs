@@ -6,7 +6,7 @@
         {
             public static class JwtClaimIdentifiers
             {
-                public const string Role = "roles", Id = "id", Tenant = "tenantId";
+                public const string Role = "rol", Id = "id", Tenant = "tenantId";
             }
         }
     }
