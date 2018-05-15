@@ -64,6 +64,10 @@ namespace BizyBoard.Data.Migrations
 
                     b.Property<bool>("IsEnabled");
 
+                    b.Property<int>("LastErpCompanyId");
+
+                    b.Property<int>("LastErpFiscalYear");
+
                     b.Property<string>("Lastname");
 
                     b.Property<bool>("LockoutEnabled");

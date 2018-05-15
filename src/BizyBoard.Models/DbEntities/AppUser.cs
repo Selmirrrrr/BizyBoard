@@ -16,6 +16,9 @@
 
         public string ErpPassword { get; set; }
 
+        public int LastErpCompanyId { get; set; }
+        public int LastErpFiscalYear { get; set; }
+
         public int TenantId { get; set; }
 
         [InverseProperty("Users")]
