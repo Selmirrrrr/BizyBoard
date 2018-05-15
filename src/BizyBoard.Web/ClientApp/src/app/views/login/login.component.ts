@@ -4,6 +4,7 @@ import { UserService } from '../../shared/services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserRegistration } from '../../shared/models/user.registration.interface';
 import { Credentials } from '../../shared/models/credentials.interface';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -47,7 +48,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         result => {
           console.log(result);
           if (result) {
-             this.router.navigate(['/board']);
+             this.router.navigate(['/dashboard']);
           }
         },
         errors => {

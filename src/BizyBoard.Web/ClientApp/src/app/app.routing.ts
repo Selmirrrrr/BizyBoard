@@ -6,8 +6,6 @@ import { DefaultLayoutComponent } from './containers';
 
 import { AuthGuard, AuthGuardLogin } from './auth.guard';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { LoginFormComponent } from './account/login-form/login-form.component';
-import { RegistrationFormComponent } from './account/registration-form/registration-form.component';
 
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
