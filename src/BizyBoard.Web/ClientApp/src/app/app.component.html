@@ -1,5 +1,19 @@
-<div class="page-wrap">
-  <header role="banner">
+<mat-sidenav-container class="sidenav-container">
+  <!-- <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport="true"
+    [attr.role]="isHandset ? 'dialog' : 'navigation'"
+    [mode]="(isHandset | async)!.matches ? 'over' : 'side'"
+    [opened]="!(isHandset | async)!.matches">
+    <mat-toolbar color="primary">Menu</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item href="#">Link 1</a>
+      <a mat-list-item href="#">Link 2</a>
+      <a mat-list-item href="#">Link 3</a>
+    </mat-nav-list>
+  </mat-sidenav> -->
+  <mat-sidenav-content>
     <mat-toolbar color="primary">
       <button mat-button [routerLink]='["/"]'>BizyBoard</button>
       <!-- This fills the remaining space of the current row -->
@@ -7,14 +21,17 @@
       <a *ngIf="isNotLoggedIn()" mat-button [routerLink]='["/login"]'>Login</a>
       <a *ngIf="isNotLoggedIn()" mat-button [routerLink]='["/register"]'>Register</a>
       <a *ngIf="isLoggedIn()" mat-button (click)='logout()'><mat-icon>exit_to_app</mat-icon> Logout</a>
+      <!-- <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="(isHandset | async)!.matches">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button> -->
     </mat-toolbar>
-  </header>
-
-  <div class='container-fluid wrapper'>
-    <div class='row'>
-      <div class='col-sm-12 body-content'>
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+<div class="grid-container">
+  <router-outlet></router-outlet>
 </div>
