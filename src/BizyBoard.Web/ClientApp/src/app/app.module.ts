@@ -1,37 +1,57 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
 
 import { AuthenticateXHRBackend } from './authenticate-xhr.backend';
 import { RouterModule } from '@angular/router';
 
+// Import containers
+import { DefaultLayoutComponent } from './containers';
+
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { SpinnerComponent } from './spinner/spinner.component';
 import { LoginFormComponent } from './account/login-form/login-form.component';
 import { RegistrationFormComponent } from './account/registration-form/registration-form.component';
+
+import { P404Component } from './views/error/404.component';
+import { P500Component } from './views/error/500.component';
+import { LoginComponent } from './views/login/login.component';
+import { RegisterComponent } from './views/register/register.component';
+
+const APP_CONTAINERS = [
+  DefaultLayoutComponent
+];
 
 import { AccountModule } from './account/account.module';
 import { UserService } from './shared/services/user.service';
 import { AuthGuard, AuthGuardLogin } from './auth.guard';
 
 import { JwtModule } from '@auth0/angular-jwt';
-import { MaterialModule } from './app.material.module';
-import { BoardComponent } from './board/board.component';
-import { MatGridListModule,
-  MatCardModule,
-  MatMenuModule,
-  MatIconModule,
-  MatButtonModule,
-  MatToolbarModule,
-  MatSidenavModule,
-  MatListModule
-} from '@angular/material';
-import { LayoutModule } from '@angular/cdk/layout';
+import { AppRoutingModule } from './app.routing';
+
+// Import 3rd party components
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { ChartsModule } from 'ng2-charts/ng2-charts';
+
+import {
+  AppAsideModule,
+  AppBreadcrumbModule,
+  AppHeaderModule,
+  AppFooterModule,
+  AppSidebarModule,
+} from '@coreui/angular';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -40,17 +60,30 @@ export function tokenGetter() {
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    CounterComponent,
+    ...APP_CONTAINERS,
+    P404Component,
+    P500Component,
+    LoginComponent,
+    RegisterComponent,
     FetchDataComponent,
-    SpinnerComponent,
     RegistrationFormComponent,
-    LoginFormComponent,
-    BoardComponent,
+    LoginFormComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserModule,
+    AppRoutingModule,
+    AppAsideModule,
+    AppBreadcrumbModule.forRoot(),
+    AppFooterModule,
+    AppHeaderModule,
+    AppSidebarModule,
+    PerfectScrollbarModule,
+    BsDropdownModule.forRoot(),
+    TabsModule.forRoot(),
+    ChartsModule,
     HttpClientModule,
+    FormsModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -58,27 +91,12 @@ export function tokenGetter() {
         blacklistedRoutes: ['localhost:3001/login/']
       }
     }),
-    HttpModule,
-    FormsModule,
-    MaterialModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
-      { path: 'register', component: RegistrationFormComponent, canActivate: [AuthGuardLogin] },
-      { path: 'login', component: LoginFormComponent, canActivate: [AuthGuardLogin] },
-      { path: 'board', component: BoardComponent },
-    ]),
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatListModule
+    HttpModule
   ],
-  providers: [UserService, AuthGuard, AuthGuardLogin],
+  providers: [{
+    provide: LocationStrategy,
+    useClass: HashLocationStrategy
+  }, UserService, AuthGuard, AuthGuardLogin],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

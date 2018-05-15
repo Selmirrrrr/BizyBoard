@@ -4,10 +4,10 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { UserRegistration } from '../models/user.registration.interface';
 
-import { BaseService } from "./base.service";
+import { BaseService } from './base.service';
 
 import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs'; 
+import { BehaviorSubject } from 'rxjs';
 
 // Add the RxJS Observable operators we need in this app.
 import { map } from 'rxjs/operators';
@@ -18,7 +18,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 
 export class UserService extends BaseService {
 
-  baseUrl: string = '';
+  baseUrl = '';
 
   // Observable navItem source
   private _authNavStatusSource = new BehaviorSubject<boolean>(false);
@@ -35,7 +35,6 @@ export class UserService extends BaseService {
     this._authNavStatusSource.next(this.loggedIn);
     this.baseUrl = baseUrl;
   }
-  
   public isAuthenticated(): boolean {
     const token = localStorage.getItem('auth_token');
     // Check whether the token is expired and return
@@ -43,23 +42,29 @@ export class UserService extends BaseService {
     return !this.jwtHelper.isTokenExpired(token);
   }
 
-    register(email: string, password: string, firstName: string, lastName: string, winBiuUsername: string, winBizPassword: string, company: string): Observable<UserRegistration> {
-    let body = JSON.stringify({ email, password, firstName, lastName, winBiuUsername, winBizPassword, company });
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    register(email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+      winBiuUsername: string,
+      winBizPassword: string,
+      company: string): Observable<UserRegistration> {
+    const body = JSON.stringify({ email, password, firstName, lastName, winBiuUsername, winBizPassword, company });
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
 
-    return this.http.post(this.baseUrl + "api/auth/register", body, options).pipe(
+    return this.http.post(this.baseUrl + 'api/auth/register', body, options).pipe(
       map(res => true), catchError(this.handleError)).source;
-  }  
+  }
 
    login(email, password) {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
     return this.http
       .post(
         this.baseUrl + 'api/auth/login',
-        JSON.stringify({ email, password }),{ headers }
+        JSON.stringify({ email, password }), { headers }
       )
       .pipe(map(res => res.json()),
       map(res => {

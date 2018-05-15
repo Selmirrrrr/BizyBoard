@@ -1,19 +1,14 @@
-
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-
-import { Credentials } from '../../shared/models/credentials.interface';
 import { UserService } from '../../shared/services/user.service';
-
+import { Router } from '@angular/router';
+import { UserRegistration } from '../../shared/models/user.registration.interface';
 import { finalize } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-registration-form',
-  templateUrl: './registration-form.component.html',
-  styleUrls: ['./registration-form.component.css']
+  selector: 'app-dashboard',
+  templateUrl: 'register.component.html'
 })
-
-export class RegistrationFormComponent implements OnInit {
+export class RegisterComponent implements OnInit {
   errors: string[] = [];
   isRequesting: boolean;
   submitted = false;
@@ -56,4 +51,3 @@ export class RegistrationFormComponent implements OnInit {
                     }});
     }
   }
-}
