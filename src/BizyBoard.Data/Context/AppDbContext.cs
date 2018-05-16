@@ -24,7 +24,7 @@
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Tenant>().HasQueryFilter(t => !t.IsDeleted && t.Id == CurrentTenantId);
-            builder.Entity<AppUserPhoto>().HasQueryFilter(t => !t.IsDeleted && t.TenantId == CurrentTenantId);
+            builder.Entity<AppUserPhoto>().HasQueryFilter(t => !t.IsDeleted);
 
             builder.Entity<Tenant>().Property(t => t.RowVersion).IsConcurrencyToken();
             builder.Entity<AppUserPhoto>().Property(t => t.RowVersion).IsConcurrencyToken();

@@ -3,25 +3,29 @@ using System;
 using BizyBoard.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BizyBoard.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180514195320_LastUserSelection")]
-    partial class LastUserSelection
+    [Migration("20180516213421_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.0-rc1-32029");
+                .HasAnnotation("ProductVersion", "2.1.0-rc1-32029")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BizyBoard.Models.DbEntities.AppRole", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -38,7 +42,8 @@ namespace BizyBoard.Data.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -46,7 +51,8 @@ namespace BizyBoard.Data.Migrations
             modelBuilder.Entity("BizyBoard.Models.DbEntities.AppUser", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AccessFailedCount");
 
@@ -104,7 +110,8 @@ namespace BizyBoard.Data.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("TenantId");
 
@@ -114,7 +121,8 @@ namespace BizyBoard.Data.Migrations
             modelBuilder.Entity("BizyBoard.Models.DbEntities.AppUserPhoto", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<byte[]>("Content");
 
@@ -140,8 +148,6 @@ namespace BizyBoard.Data.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
-                    b.Property<int>("TenantId");
-
                     b.Property<int>("UserId");
 
                     b.HasKey("Id");
@@ -149,8 +155,6 @@ namespace BizyBoard.Data.Migrations
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("LastUpdateById");
-
-                    b.HasIndex("TenantId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -161,7 +165,8 @@ namespace BizyBoard.Data.Migrations
             modelBuilder.Entity("BizyBoard.Models.DbEntities.Tenant", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByFullName")
                         .HasMaxLength(128);
@@ -198,7 +203,8 @@ namespace BizyBoard.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -216,7 +222,8 @@ namespace BizyBoard.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("AppRoleId");
 
@@ -236,7 +243,8 @@ namespace BizyBoard.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -254,7 +262,8 @@ namespace BizyBoard.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("AppUserId");
 
@@ -341,11 +350,6 @@ namespace BizyBoard.Data.Migrations
                     b.HasOne("BizyBoard.Models.DbEntities.AppUser", "LastUpdateBy")
                         .WithMany()
                         .HasForeignKey("LastUpdateById");
-
-                    b.HasOne("BizyBoard.Models.DbEntities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BizyBoard.Models.DbEntities.AppUser", "User")
                         .WithOne("ProfilePhoto")

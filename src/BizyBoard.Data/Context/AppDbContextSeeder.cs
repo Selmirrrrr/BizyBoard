@@ -19,7 +19,7 @@
         private readonly RolesService _rolesService;
         private readonly ILogger<AppDbContextSeeder> _logger;
 
-        public AppDbContextSeeder(AppDbContext context, 
+        public AppDbContextSeeder(AppDbContext context,
             AdminDbContext adminDbContext,
             UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager,
@@ -62,7 +62,7 @@
             //tenant = _context.Add(tenant).Entity;
             tenant = _adminDbContext.Tenants.Add(tenant).Entity;
             _adminDbContext.SaveChanges();
-            
+
 
             await _userManager.CreateAsync(new AppUser
             {
