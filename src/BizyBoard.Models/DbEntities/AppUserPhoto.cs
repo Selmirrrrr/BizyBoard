@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class AppUserPhoto : EntityBase, ITenantEntity
+    public class AppUserPhoto : EntityBase
     {
         public string ContentType { get; set; }
 
@@ -12,9 +12,5 @@
 
         [InverseProperty("ProfilePhoto")]
         public AppUser User { get; set; }
-
-        public int TenantId { get; set; }
-
-        public virtual Tenant Tenant { get; set; }
     }
 }
