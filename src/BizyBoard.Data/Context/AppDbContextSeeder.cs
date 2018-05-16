@@ -38,8 +38,6 @@
 
         public async Task Seed()
         {
-            // await Migrate();
-
             if (_context.Roles.Any()) return;
 
             var rolesToAdd = new List<AppRole>(){
@@ -59,7 +57,6 @@
                 LastUpdateDate = DateTime.Now
             };
 
-            //tenant = _context.Add(tenant).Entity;
             tenant = _adminDbContext.Tenants.Add(tenant).Entity;
             _adminDbContext.SaveChanges();
 
@@ -72,7 +69,7 @@
                 Email = "info@bizy.ch",
                 EmailConfirmed = true,
                 Tenant = tenant
-            }, "P@ssw0rd!");
+            }, Environment.GetEnvironmentVariable("USER_PASSWORD"));
 
             var user = await _userManager.FindByNameAsync("info@bizy.ch");
 
