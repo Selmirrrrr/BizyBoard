@@ -25,7 +25,7 @@
 
         public BoardController(IOuinneBiseSharpFactory factory, UserManager<AppUser> userManager, ILogger<BoardController> logger)
         {
-            _service = factory.GetInstance("sdasd", "fdsdfs");
+            _service = factory.GetInstance("", "sdasd", "fdsdfs");
             //_tenantsRepository = tenantsRepository;
             _userManager = userManager;
             _logger = logger;

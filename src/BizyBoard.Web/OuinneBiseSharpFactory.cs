@@ -5,6 +5,6 @@
 
     public class OuinneBiseSharpFactory : IOuinneBiseSharpFactory
     {
-        public OuinneBiseSharpService GetInstance(string winBizUsername, string winBizpassword) => new OuinneBiseSharpService("", Environment.GetEnvironmentVariable("WINBIZ_API_USERNAME"), Environment.GetEnvironmentVariable("WINBIZ_API_PASSWORD"), 2, 2018, Environment.GetEnvironmentVariable("WINBIZ_API_KEY"), "BizyBoard");
+        public OuinneBiseSharpService GetInstance(string winBizCompany, string winBizUsername, string winBizpassword) => new OuinneBiseSharpService(winBizCompany, Environment.GetEnvironmentVariable("WINBIZ_API_USERNAME"), Environment.GetEnvironmentVariable("WINBIZ_API_PASSWORD"), 2, 2018, Environment.GetEnvironmentVariable("WINBIZ_API_KEY"), "BizyBoard");
     }
 }

@@ -6,6 +6,8 @@
     using System.Threading.Tasks;
     using Auth;
     using AutoMapper;
+    using Bizy.OuinneBiseSharp.Extensions;
+    using Core.Helpers;
     using Core.Services;
     using Data.Context;
     using Microsoft.AspNetCore.Identity;
@@ -24,6 +26,7 @@
         private readonly IJwtFactory _jwtFactory;
         private readonly ILogger<AuthController> _logger;
         private readonly RolesService _rolesService;
+        private readonly IOuinneBiseSharpFactory _factory;
         private readonly IMapper _mapper;
         private readonly JwtIssuerOptions _jwtOptions;
 
@@ -32,6 +35,7 @@
                                  IJwtFactory jwtFactory,
                                  IOptions<JwtIssuerOptions> jwtOptions,
                                  RolesService rolesService,
+                                 IOuinneBiseSharpFactory factory,
                                  IMapper mapper,
                                  ILogger<AuthController> logger)
         {
@@ -40,6 +44,7 @@
             _dbContext = dbContext;
             _jwtFactory = jwtFactory;
             _rolesService = rolesService;
+            _factory = factory;
             _mapper = mapper;
             _userManager = userManager;
         }
@@ -48,7 +53,7 @@
         public async Task<IActionResult> Register([FromBody]RegistrationViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            if (_userManager.Users.Any(u => u.NormalizedEmail == model.Email)) 
+            if (_userManager.Users.Any(u => u.NormalizedEmail == model.Email))
                 return new BadRequestObjectResult(Errors.AddErrorToModelState("account_creation_failure", "Email déjà existant.", ModelState));
 
             var userIdentity = _mapper.Map<AppUser>(model);
@@ -103,6 +108,28 @@
             var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.Email, _jwtOptions);
 
             return new OkObjectResult(jwt);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TestWinBizCredentials([FromBody] RegistrationViewModel credentials)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.Password.Encrypt(Constants.Strings.WinBizEncryptionKey));
+
+            try
+            {
+                var folders = await service.Folders();
+                if (folders.ErrorsCount > 0) return BadRequest(folders.UserErrorMsg);
+                if (folders.Value.Count < 1) return BadRequest("Pas de dossier ouvert dans WinBIZ Cloud");
+
+                return new OkObjectResult(folders.Value.Select(d => new { d.Number, d.Name, Exercices = d.Exercices.Select(e => new { e.Year, e.Start, e.End, e.Description, e.IsClosed, Dossier = d.Number }) }).ToList());
+            }
+            catch (Exception e)
+            {
+                return BadRequest("La requête a échoué, vérifiez vos paramètres de connexion.");
+            }
+
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
