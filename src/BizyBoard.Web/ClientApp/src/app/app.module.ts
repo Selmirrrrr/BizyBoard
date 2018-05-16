@@ -32,6 +32,7 @@ const APP_CONTAINERS = [
 ];
 
 import { UserService } from './shared/services/user.service';
+import { DataService } from './shared/services/data.service';
 import { AuthGuard, AuthGuardLogin } from './auth.guard';
 
 import { JwtModule } from '@auth0/angular-jwt';
@@ -91,7 +92,7 @@ export function tokenGetter() {
   providers: [{
     provide: LocationStrategy,
     useClass: HashLocationStrategy
-  }, UserService, AuthGuard, AuthGuardLogin],
+  }, UserService, DataService, AuthGuard, AuthGuardLogin],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

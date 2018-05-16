@@ -46,10 +46,12 @@ export class UserService extends BaseService {
       password: string,
       firstName: string,
       lastName: string,
-      winBiuUsername: string,
+      winBizUsername: string,
       winBizPassword: string,
-      company: string): Observable<UserRegistration> {
-    const body = JSON.stringify({ email, password, firstName, lastName, winBiuUsername, winBizPassword, company });
+      company: string,
+      dossier: number,
+      year: number): Observable<UserRegistration> {
+    const body = JSON.stringify({ email, password, firstName, lastName, winBizUsername, winBizPassword, company, dossier, year });
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const options = new RequestOptions({ headers: headers });
 

@@ -18,8 +18,8 @@
 
         public string WinBizPassword { get; set; }
 
-        public string WinBizCompanyName { get; set; }
-
         public string Company { get; set; }
+        public int LastErpCompanyId { get; set; }
+        public int LastErpFiscalYear { get; set; }
     }
 }

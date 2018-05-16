@@ -6,4 +6,6 @@ export interface UserRegistration {
     winBizUsername: string;
     winBizPassword: string;
     company: string;
+    lastErpCompanyId: number;
+    lastErpFiscalYear: number;
 }

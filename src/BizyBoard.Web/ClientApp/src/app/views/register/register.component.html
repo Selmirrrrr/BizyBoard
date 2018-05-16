@@ -15,6 +15,7 @@
                     </span>
                   </div>
                   <input type="text" class="form-control" id="company" placeholder="Entreprise" required name="company" ngModel>
+                  <span class="help-block small">Doit être exactement identique à celui donné lors de votre inscription à WinBIZ Cloud.</span>
                 </div>
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
@@ -53,7 +54,7 @@
                       <i class="icon-user"></i>
                     </span>
                   </div>
-                  <input type="text" class="form-control" id="winBizUsername" placeholder="Nom d'utilisateur WinBIZ Cloud" name="winBizUsername"
+                  <input type="text" class="form-control" id="winBizUsername" name="winBizUsername" placeholder="Nom d'utilisateur WinBIZ Cloud"
                     ngModel>
                 </div>
                 <div class="input-group mb-4">
@@ -68,18 +69,30 @@
                 <button type="submit" class="btn btn-block btn-success">Créer le compte</button>
               </div>
             </form>
-            <div class="card-footer p-4">
+            <div *ngIf="dossiers.length > 1" class="card-footer p-4">
               <div class="row">
-                <div class="col-6">
-                  <button class="btn btn-block btn-facebook" type="button">
-                    <span>facebook</span>
-                  </button>
+                <div class="col-7">
+                  <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Dossier</label>
+                    <div class="col-md-8">
+                      <select [(ngModel)]="selectedExercice" class="form-control">
+                        <optgroup *ngFor="let d of dossiers" value="d" label="{{d.name}}">
+                          <option *ngFor="let e of d.exercices" value="e">{{e.year}}</option>                          
+                        </optgroup>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-6">
-                  <button class="btn btn-block btn-twitter" type="button">
-                    <span>twitter</span>
-                  </button>
-                </div>
+                <!-- <div *ngIf="selectedDossier" class="col-5">
+                  <div class="form-group row">
+                    <label class="col-md-5 col-form-label">Année</label>
+                    <div class="col-md-7">
+                      <select [(ngModel)]="selectedExercice" class="form-control">
+                        <option *ngFor="let ex of selectedDossier.exercices" value="ex.">{{exercice.year}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div> -->
               </div>
             </div>
           </div>
