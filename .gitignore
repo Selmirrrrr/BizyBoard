@@ -231,3 +231,7 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+/src/.vscode/launch.json
+/src/.vscode/tasks.json
+
+/src/BizyBoard.Web/BizyBoard.db

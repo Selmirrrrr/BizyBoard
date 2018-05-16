@@ -1,0 +1,103 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card mx-4">
+            <form #f="ngForm" novalidate (ngSubmit)="registerUser(f)">
+              <div class="card-body p-4">
+                <h1>Inscription</h1>
+                <p class="text-muted">Création du compte</p>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-globe"></i>
+                    </span>
+                  </div>
+                  <input type="text" class="form-control" id="company" placeholder="Entreprise" required name="company" ngModel>
+                  <span class="help-block small">Doit être exactement identique à celui donné lors de votre inscription à WinBIZ Cloud.</span>
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-user"></i>
+                    </span>
+                  </div>
+                  <input type="text" class="form-control" id="first-name" placeholder="Prénom" name="firstName" tmFocus ngModel>
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-user"></i>
+                    </span>
+                  </div>
+                  <input type="text" class="form-control" id="last-name" placeholder="Nom" name="lastName" ngModel>
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">@</span>
+                  </div>
+                  <input id="email" type="text" required name="email" validateEmail class="form-control" placeholder="Email" ngModel #email="ngModel">
+                  <small [hidden]="email.valid || (email.pristine && !submitted)" class="text-danger">Please enter a valid email</small>
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-lock"></i>
+                    </span>
+                  </div>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe Bizy" ngModel>
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-user"></i>
+                    </span>
+                  </div>
+                  <input type="text" class="form-control" id="winBizUsername" name="winBizUsername" placeholder="Nom d'utilisateur WinBIZ Cloud"
+                    ngModel>
+                </div>
+                <div class="input-group mb-4">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-lock"></i>
+                    </span>
+                  </div>
+                  <input type="password" class="form-control" id="winBizPassword" name="winBizPassword" placeholder="Mot de passe WinBIZ Cloud"
+                    ngModel>
+                </div>
+                <button type="submit" class="btn btn-block btn-success">Créer le compte</button>
+              </div>
+            </form>
+            <div *ngIf="dossiers.length > 1" class="card-footer p-4">
+              <div class="row">
+                <div class="col-7">
+                  <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Dossier</label>
+                    <div class="col-md-8">
+                      <select [(ngModel)]="selectedExercice" class="form-control">
+                        <optgroup *ngFor="let d of dossiers" value="d" label="{{d.name}}">
+                          <option *ngFor="let e of d.exercices" value="e">{{e.year}}</option>                          
+                        </optgroup>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div *ngIf="selectedDossier" class="col-5">
+                  <div class="form-group row">
+                    <label class="col-md-5 col-form-label">Année</label>
+                    <div class="col-md-7">
+                      <select [(ngModel)]="selectedExercice" class="form-control">
+                        <option *ngFor="let ex of selectedDossier.exercices" value="ex.">{{exercice.year}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
