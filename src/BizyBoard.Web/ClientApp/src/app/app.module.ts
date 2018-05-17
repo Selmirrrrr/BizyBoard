@@ -13,6 +13,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
 };
 
+import { AlertModule } from 'ngx-bootstrap/alert';
+
 import { AuthenticateXHRBackend } from './authenticate-xhr.backend';
 import { RouterModule } from '@angular/router';
 
@@ -63,7 +65,7 @@ export function tokenGetter() {
     P500Component,
     LoginComponent,
     RegisterComponent,
-    FetchDataComponent,
+    FetchDataComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -77,6 +79,7 @@ export function tokenGetter() {
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    AlertModule.forRoot(),
     ChartsModule,
     HttpClientModule,
     FormsModule,
