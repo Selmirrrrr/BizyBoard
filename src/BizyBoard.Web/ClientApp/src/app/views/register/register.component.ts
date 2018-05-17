@@ -79,7 +79,6 @@ export class RegisterComponent implements OnInit {
         .subscribe(
           result => {
             if (result) {
-              console.trace(result);
               this.dossiers = result;
             }
           },

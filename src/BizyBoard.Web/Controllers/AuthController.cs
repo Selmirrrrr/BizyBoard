@@ -115,19 +115,19 @@
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.Password.Encrypt(Constants.Strings.WinBizEncryptionKey));
+            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword.Encrypt(Constants.Strings.WinBizEncryptionKey));
 
             try
             {
                 var folders = await service.Folders();
-                if (folders.ErrorsCount > 0) return BadRequest(folders.UserErrorMsg);
-                if (folders.Value.Count < 1) return BadRequest("Pas de dossier ouvert dans WinBIZ Cloud");
+                if (folders.ErrorsCount > 0) return new BadRequestObjectResult(folders.UserErrorMsg);
+                if (folders.Value.Count < 1) return new BadRequestObjectResult("Pas de dossier ouvert dans WinBIZ Cloud");
 
                 return new OkObjectResult(folders.Value.Select(d => new { d.Number, d.Name, Exercices = d.Exercices.Select(e => new { e.Year, e.Start, e.End, e.Description, e.IsClosed, Dossier = d.Number }) }).ToList());
             }
             catch (Exception e)
             {
-                return BadRequest("La requête a échoué, vérifiez vos paramètres de connexion.");
+                return new BadRequestObjectResult(e);
             }
 
         }
