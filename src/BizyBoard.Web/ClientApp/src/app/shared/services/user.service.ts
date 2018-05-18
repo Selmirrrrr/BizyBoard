@@ -86,11 +86,11 @@ export class UserService extends BaseService {
       .pipe(map(res => true), catchError(this.handleError)).source;
   }
 
-  updatePassword(email: string, password: string, passwordConfirmation: string, token: string) {
+  updatePassword(email: string, newPassword: string, passwordConfirmation: string, token: string) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http
-      .post(this.baseUrl + 'api/auth/updatepassword', JSON.stringify({email, password, passwordConfirmation, token}), {headers})
+      .post(this.baseUrl + 'api/auth/updatepassword', JSON.stringify({email, newPassword, passwordConfirmation, token}), {headers})
       .pipe(map(res => true), catchError(this.handleError)).source;
   }
 
