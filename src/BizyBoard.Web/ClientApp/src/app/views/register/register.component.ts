@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   isRequesting: boolean;
   submitted = false;
   selectedDossier: Dossier;
-  selectedExercice: Exercice;
+  selectedExercice: string;
 
   constructor(private userService: UserService, private dataService: DataService, private router: Router) { }
 
@@ -36,7 +36,7 @@ export class RegisterComponent implements OnInit {
         value.lastName,
         value.winBizUsername,
         value.winBizPassword,
-        value.company, this.selectedExercice.dossier, this.selectedExercice.year).pipe(
+        value.company, JSON.parse(this.selectedExercice).dossier, JSON.parse(this.selectedExercice).year).pipe(
           finalize(() => this.isRequesting = false)
         )
         .subscribe(
@@ -79,7 +79,6 @@ export class RegisterComponent implements OnInit {
         .subscribe(
           result => {
             if (result) {
-              console.trace(result);
               this.dossiers = result;
             }
           },

@@ -7,19 +7,13 @@
     public class RegistrationViewModel
     {
         public string Firstname { get; set; }
-
         public string Lastname { get; set; }
-
         public string Email { get; set; }
-
         public string Password { get; set; }
-
         public string WinBizUsername { get; set; }
-
         public string WinBizPassword { get; set; }
-
         public string Company { get; set; }
-        public int LastErpCompanyId { get; set; }
-        public int LastErpFiscalYear { get; set; }
+        public int Year { get; set; }
+        public int Dossier { get; set; }
     }
 }

@@ -31,8 +31,7 @@ namespace BizyBoard.Web
 
     public class Startup
     {
-        private const string SecretKey = "db3OIsj+BXE9NZDy0t8W3TcNekrF+2d/1sFnWG4HnV8TZY30iTOdtVWJG8abWvB1GlOgJuQZdcF2Luqm/hccMw=="; // todo: get this from somewhere secure
-        private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
+        private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY")));
 
         public Startup(IConfiguration configuration)
         {
@@ -49,15 +48,10 @@ namespace BizyBoard.Web
             services.AddSession();
             services.AddLogging();
 
-            services.AddDbContext<AdminDbContext>(options =>
-            {
-                //var useSqLite = Configuration["Data:useSqLite"];
-                //if (useSqLite.ToLower() == "true") 
-                options.UseSqlite(Configuration["Data:SqlLiteConnectionString"]);
-                //else options.UseSqlServer(Configuration["Data:SqlServerConnectionString"]);
-            });
+            services.AddDbContext<AdminDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING"), b => b.MigrationsAssembly("BizyBoard.Data")));
 
-            services.AddDbContext<AppDbContext>(options => options.UseSqlite(Configuration["Data:SqlLiteConnectionString"], b => b.MigrationsAssembly("BizyBoard.Data")));
+
 
             services.AddTransient<AppDbContextSeeder>();
 

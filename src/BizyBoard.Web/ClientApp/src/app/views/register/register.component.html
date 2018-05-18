@@ -66,6 +66,13 @@
                   <input type="password" class="form-control" id="winBizPassword" name="winBizPassword" placeholder="Mot de passe WinBIZ Cloud"
                     ngModel>
                 </div>
+                <alert type="warning" *ngIf="errors.length > 0">
+                  <ul>
+                    <li *ngFor="let error of errors">
+                      {{ error }}
+                    </li>
+                  </ul>
+                </alert>
                 <button type="submit" class="btn btn-block btn-success">Créer le compte</button>
               </div>
             </form>
@@ -77,22 +84,12 @@
                     <div class="col-md-8">
                       <select [(ngModel)]="selectedExercice" class="form-control">
                         <optgroup *ngFor="let d of dossiers" value="d" label="{{d.name}}">
-                          <option *ngFor="let e of d.exercices" value="e">{{e.year}}</option>                          
+                          <option *ngFor="let e of d.exercices" value="{ &quot;year&quot;:{{e.year}}, &quot;dossier&quot;:{{e.dossier}} }">{{e.year}}</option>
                         </optgroup>
                       </select>
                     </div>
                   </div>
                 </div>
-                <!-- <div *ngIf="selectedDossier" class="col-5">
-                  <div class="form-group row">
-                    <label class="col-md-5 col-form-label">Année</label>
-                    <div class="col-md-7">
-                      <select [(ngModel)]="selectedExercice" class="form-control">
-                        <option *ngFor="let ex of selectedDossier.exercices" value="ex.">{{exercice.year}}</option>
-                      </select>
-                    </div>
-                  </div>
-                </div> -->
               </div>
             </div>
           </div>
