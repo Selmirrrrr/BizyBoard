@@ -19,11 +19,13 @@
                 public static (string code, string message) NoWinBizFolder = ("no_winbiz_folder", "Pas de dossier ouvert dans WinBIZ Cloud");
                 public static (string code, string message) LoginFailure = ("login_failure", "Mot de passe ou nom d'utilisateur incorrect.");
                 public static (string code, string message) DuplicateEmail = ("duplicate_email", "Email déjà existant.");
+                public static (string code, string message) PasswordResetUpdateError = ("password_reset_update_error", "Erreur durant la mise à jour du mot de passe.");
             }
 
             public static class Success
             {
                 public static (string code, string message) PasswordReset = ("password_reset", "Un email a été envoyé avec les instructions à suivre.");
+                public static (string code, string message) PasswordResetUpdate = ("password_reset_update", "Votre mot de passe a été modifié.");
             }
         }
     }

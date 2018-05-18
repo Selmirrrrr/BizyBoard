@@ -3,6 +3,14 @@ export interface Credentials {
     password: string;
 }
 
+export interface UpdatePwdModel {
+    email: string;
+    newPassword: string;
+    passwordConfirmation: string;
+    token: string;
+}
+
+
 export interface Email {
     email: string;
 }
@@ -10,7 +18,7 @@ export interface Email {
 export interface Dossier {
     number: number;
     name: string;
-    exercices: Exercice[]
+    exercices: Exercice[];
 }
 
 export interface Exercice {

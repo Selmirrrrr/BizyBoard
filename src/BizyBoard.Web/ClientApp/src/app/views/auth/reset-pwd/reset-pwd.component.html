@@ -15,11 +15,13 @@
                         <i class="icon-user"></i>
                       </span>
                     </div>
-                    <input id="email" type="text" required name="email" class="form-control" placeholder="email@exemple.ch" [ngModel]="email.email"
-                      #email="ngModel" tmFocus validateEmail>
+                    <input id="email" type="text" required name="email" class="form-control" placeholder="email@exemple.ch" tmfocus ngmodel>
                   </div>
                   <alert [dismissible]="true" *ngFor="let error of errors" type="warning">
                     {{ error }}
+                  </alert>
+                  <alert [dismissible]="true" *ngIf="message" type="success">
+                    {{ message }}
                   </alert>
                   <div class="row">
                     <div class="col-6">

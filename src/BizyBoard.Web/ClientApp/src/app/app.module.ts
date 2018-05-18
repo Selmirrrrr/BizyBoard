@@ -1,3 +1,4 @@
+import { UpdatePwdComponent } from './views/auth/update-pwd/update-pwd.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
@@ -26,8 +27,9 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
-import { LoginComponent } from './views/login/login.component';
-import { RegisterComponent } from './views/register/register.component';
+import { LoginComponent } from './views/auth/login/login.component';
+import { RegisterComponent } from './views/auth/register/register.component';
+import { ResetPwdComponent } from './views/auth/reset-pwd/reset-pwd.component';
 
 const APP_CONTAINERS = [
   DefaultLayoutComponent
@@ -52,7 +54,6 @@ import {
   AppFooterModule,
   AppSidebarModule,
 } from '@coreui/angular';
-import { ResetPwdComponent } from './views/reset-pwd/reset-pwd.component';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -67,7 +68,8 @@ export function tokenGetter() {
     LoginComponent,
     RegisterComponent,
     FetchDataComponent,
-    ResetPwdComponent
+    ResetPwdComponent,
+    UpdatePwdComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

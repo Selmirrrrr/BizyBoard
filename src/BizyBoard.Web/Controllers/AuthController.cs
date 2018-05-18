@@ -138,26 +138,37 @@
             }
         }
 
-        [HttpPost]  
+        [HttpPost]
         //[ValidateAntiForgeryToken]  
-        public async Task<IActionResult> ForgotPassword([FromBody]ResetPwdViewModel vm)  
-        {  
+        public async Task<IActionResult> ForgotPassword([FromBody]ResetPwdViewModel vm)
+        {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            if (string.IsNullOrEmpty(vm.Email)) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.EmptyEmail, ModelState));
-  
+
             var user = await _userManager.FindByEmailAsync(vm.Email);
             if (user == null) return new OkObjectResult(Success.PasswordReset);
-  
-            if (!await _userManager.IsEmailConfirmedAsync(user)) return new OkObjectResult(Success.PasswordReset);
-  
-            var confrimationCode = await _userManager.GeneratePasswordResetTokenAsync(user);
-  
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
 
-            _emailService.SendEmailAsync(user.Email, "Reset Password", baseUrl + "?code=" + confrimationCode.Replace("&", "&amp;") + "&userId=" + user.Id);
-  
+            if (!await _userManager.IsEmailConfirmedAsync(user)) return new OkObjectResult(Success.PasswordReset);
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/#/updatepwd";
+
+            await _emailService.SendEmailAsync(user.Email, "Demande de réinitialisation de mot de passe", baseUrl + "?token=" + token.Replace("&", "&amp;") + "&email=" + user.Email);
+
             return new OkObjectResult(Success.PasswordReset);
-        }  
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword([FromBody]ResetPwdUpdateViewModel vm)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var user = await _userManager.FindByEmailAsync(vm.Email);
+
+            var result = await _userManager.ResetPasswordAsync(user, vm.Token, vm.NewPassword);
+            if (result.Succeeded) return new OkObjectResult(Success.PasswordResetUpdate);
+
+            return new BadRequestObjectResult(result);
+        }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
         {

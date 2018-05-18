@@ -3,7 +3,7 @@
     using FluentValidation.Attributes;
     using Validations;
 
-    [Validator(typeof(ResetPwdViewModel))]
+    [Validator(typeof(ResetPwdViewModelValidator))]
     public class ResetPwdViewModel
     {
         public string Email { get; set; }

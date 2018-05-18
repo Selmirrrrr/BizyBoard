@@ -1,41 +1,54 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { OnInit, OnDestroy, Component } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { UserService } from '../../shared/services/user.service';
+import { UpdatePwdModel } from '../../../shared/models/credentials.interface';
+import { UserService } from '../../../shared/services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Credentials, Email } from '../../shared/models/credentials.interface';
 import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: 'reset-pwd.component.html'
+  templateUrl: 'update-pwd.component.html'
 })
-export class ResetPwdComponent implements OnInit, OnDestroy {
-  message: string;
-  email: Email = { email: ''};
+export class UpdatePwdComponent implements OnInit, OnDestroy {
+
+  private subscription: Subscription;
+
+  code: boolean;
   errors: string[] = [];
   isRequesting: boolean;
   submitted = false;
+  credentials: UpdatePwdModel = { email: '', newPassword: '', passwordConfirmation: '', token: '' };
 
   constructor(private userService: UserService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
     ngOnInit() {
 
-    }
+    // subscribe to router event
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (param: any) => {
+         this.credentials.token = param['token'];
+         this.credentials.email = param['email'];
+      });
+  }
 
-    ngOnDestroy() {
+   ngOnDestroy() {
+    // prevent memory leak by unsubscribing
+    this.subscription.unsubscribe();
+  }
 
-    }
-
-  resetPassword({ value, valid }: { value: Email, valid: boolean }) {
+  updatePassword({ value, valid }: { value: UpdatePwdModel, valid: boolean }) {
     this.submitted = true;
     this.isRequesting = true;
     this.errors = [];
     if (valid) {
-      this.userService.resetPassword(value.email)
+      this.userService.updatePassword(value.email, value.newPassword, value.passwordConfirmation, value.token)
         .pipe(finalize(() => this.isRequesting = false))
         .subscribe(
         result => {
-          this.message = JSON.parse(result);
+          console.log(result);
+          if (result) {
+            this.router.navigate(['/login'], { queryParams: { email: value.email } });
+          }
         },
         errors => {
           // this.successfulSave = false;

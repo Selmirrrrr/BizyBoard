@@ -6,7 +6,6 @@
     using Bizy.OuinneBiseSharp.Enums;
     using Bizy.OuinneBiseSharp.Services;
     using Core.Helpers;
-    using Data.Repositories;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -17,7 +16,6 @@
     [Route("api/[controller]/[action]")]
     public class BoardController : Controller
     {
-        private readonly IRepository<Tenant> _tenantsRepository;
         private readonly OuinneBiseSharpService _service;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<BoardController> _logger;
@@ -26,7 +24,6 @@
         public BoardController(IOuinneBiseSharpFactory factory, UserManager<AppUser> userManager, ILogger<BoardController> logger)
         {
             _service = factory.GetInstance("", "sdasd", "fdsdfs");
-            //_tenantsRepository = tenantsRepository;
             _userManager = userManager;
             _logger = logger;
         }

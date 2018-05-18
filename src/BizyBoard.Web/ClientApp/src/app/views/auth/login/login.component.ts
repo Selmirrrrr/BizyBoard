@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { UserService } from '../../shared/services/user.service';
+import { UserService } from '../../../shared/services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserRegistration } from '../../shared/models/user.registration.interface';
-import { Credentials } from '../../shared/models/credentials.interface';
+import { UserRegistration } from '../../../shared/models/user.registration.interface';
+import { Credentials } from '../../../shared/models/credentials.interface';
 import { finalize } from 'rxjs/operators';
 
 @Component({

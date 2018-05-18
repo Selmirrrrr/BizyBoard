@@ -1,9 +1,9 @@
-import { Dossier, Exercice } from './../../shared/models/credentials.interface';
+import { Dossier, Exercice } from './../../../shared/models/credentials.interface';
 import { Component, OnInit, Output } from '@angular/core';
-import { UserService } from '../../shared/services/user.service';
-import { DataService } from './../../shared/services/data.service';
+import { UserService } from '../../../shared/services/user.service';
+import { DataService } from './../../../shared/services/data.service';
 import { Router } from '@angular/router';
-import { UserRegistration } from '../../shared/models/user.registration.interface';
+import { UserRegistration } from '../../../shared/models/user.registration.interface';
 import { finalize } from 'rxjs/operators';
 
 @Component({
