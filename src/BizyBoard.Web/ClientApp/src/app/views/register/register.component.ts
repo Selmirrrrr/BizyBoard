@@ -56,7 +56,7 @@ export class RegisterComponent implements OnInit {
                 }
               }
             } else {
-              this.errors.push('something went wrong!');
+              this.errors.push(errors.text());
             }
           });
     }
@@ -93,7 +93,7 @@ export class RegisterComponent implements OnInit {
                 }
               }
             } else {
-              this.errors.push('something went wrong!');
+              this.errors.push(errors.text());
             }
           });
     }

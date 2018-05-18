@@ -66,14 +66,10 @@
                   <input type="password" class="form-control" id="winBizPassword" name="winBizPassword" placeholder="Mot de passe WinBIZ Cloud"
                     ngModel>
                 </div>
-                <alert type="warning" *ngIf="errors.length > 0">
-                  <ul>
-                    <li *ngFor="let error of errors">
-                      {{ error }}
-                    </li>
-                  </ul>
+                <alert [dismissible]="true" *ngFor="let error of errors" type="warning">
+                  {{ error }}
                 </alert>
-                <button type="submit" class="btn btn-block btn-success">Créer le compte</button>
+                <button type="submit" *ngIf="dossiers.length < 1" class="btn btn-block btn-success">Connexion à WinBIZ Cloud</button>
               </div>
             </form>
             <div *ngIf="dossiers.length > 1" class="card-footer p-4">
@@ -91,6 +87,7 @@
                   </div>
                 </div>
               </div>
+              <button type="submit" class="btn btn-block btn-success">Créer le compte</button>
             </div>
           </div>
         </div>

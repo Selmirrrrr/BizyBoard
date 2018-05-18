@@ -15,5 +15,11 @@
         public string Company { get; set; }
         public int Year { get; set; }
         public int Dossier { get; set; }
+
+        public void CleanPasswords()
+        {
+            WinBizPassword = string.Empty;
+            Password = string.Empty;
+        }
     }
 }

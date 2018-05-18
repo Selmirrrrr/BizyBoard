@@ -1,6 +1,7 @@
 ﻿namespace BizyBoard.Web.Controllers
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
@@ -12,11 +13,11 @@
     using Data.Context;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore.Internal;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Models.DbEntities;
     using Models.ViewModels;
+    using static Core.Helpers.Constants.Strings;
 
     [Route("api/[controller]/[action]")]
     public class AuthController : ControllerBase
@@ -54,7 +55,7 @@
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (_userManager.Users.Any(u => u.NormalizedEmail == model.Email))
-                return new BadRequestObjectResult(Errors.AddErrorToModelState("account_creation_failure", "Email déjà existant.", ModelState));
+                return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.DuplicateEmail, ModelState));
 
             var userIdentity = _mapper.Map<AppUser>(model);
 
@@ -78,7 +79,7 @@
             {
                 _dbContext.Tenants.Remove(tenant);
                 await _dbContext.SaveChangesAsync();
-                return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+                return new BadRequestObjectResult(ErrorsHelper.AddErrorsToModelState(result, ModelState));
             }
 
             var user = await _userManager.FindByEmailAsync(userIdentity.Email);
@@ -103,7 +104,7 @@
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var identity = await GetClaimsIdentity(credentials.Email, credentials.Password);
-            if (identity == null) return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid username or password.", ModelState));
+            if (identity == null) return BadRequest(ErrorsHelper.AddErrorToModelState(Errors.LoginFailure, ModelState));
 
             var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.Email, _jwtOptions);
 
@@ -115,21 +116,22 @@
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword.Encrypt(Constants.Strings.WinBizEncryptionKey));
+            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword.Encrypt(WinBizEncryptionKey));
 
             try
             {
                 var folders = await service.Folders();
-                if (folders.ErrorsCount > 0) return new BadRequestObjectResult(folders.UserErrorMsg);
-                if (folders.Value.Count < 1) return new BadRequestObjectResult("Pas de dossier ouvert dans WinBIZ Cloud");
+                if (folders.ErrorsCount > 0) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState("winbiz_error", folders.UserErrorMsg, ModelState));
+                if (folders.Value.Count < 1) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.NoWinBizFolder, ModelState));
 
                 return new OkObjectResult(folders.Value.Select(d => new { d.Number, d.Name, Exercices = d.Exercices.Select(e => new { e.Year, e.Start, e.End, e.Description, e.IsClosed, Dossier = d.Number }) }).ToList());
             }
             catch (Exception e)
             {
-                return new BadRequestObjectResult(e);
+                credentials.CleanPasswords();
+                _logger.LogCritical(e, nameof(TestWinBizCredentials), credentials);
+                return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.Base, ModelState));
             }
-
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
@@ -145,8 +147,6 @@
             if (!await _userManager.CheckPasswordAsync(userToVerify, password)) return await Task.FromResult<ClaimsIdentity>(null);
             var roles = await _userManager.GetRolesAsync(userToVerify);
             return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, userToVerify.TenantId, roles));
-
-            // Credentials are invalid, or account doesn't exist
         }
     }
 }
