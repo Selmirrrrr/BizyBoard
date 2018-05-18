@@ -24,11 +24,10 @@ export class RegisterComponent implements OnInit {
   }
 
   registerUser({ value, valid }: { value: UserRegistration, valid: boolean }) {
-    if (this.dossiers.length < 1) return this.testWinBizCredentials({ value, valid });
+    if (this.dossiers.length < 1) { return this.testWinBizCredentials({ value, valid }); }
     this.submitted = true;
     this.isRequesting = true;
     this.errors = [];
-    console.trace(this.selectedExercice);
     if (valid) {
       this.userService.register(value.email,
         value.password,

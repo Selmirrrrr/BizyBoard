@@ -11,6 +11,7 @@ import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
+import { ResetPwdComponent } from './views/reset-pwd/reset-pwd.component';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,14 @@ export const routes: Routes = [
     canActivate: [AuthGuardLogin],
     data: {
       title: 'Register Page'
+    }
+  },
+  {
+    path: 'resetpwd',
+    component: ResetPwdComponent,
+    canActivate: [AuthGuardLogin],
+    data: {
+      title: 'Reset password page'
     }
   },
   {

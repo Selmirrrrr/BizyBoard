@@ -3,6 +3,10 @@ export interface Credentials {
     password: string;
 }
 
+export interface Email {
+    email: string;
+}
+
 export interface Dossier {
     number: number;
     name: string;
@@ -15,5 +19,5 @@ export interface Exercice {
     end: Date;
     description: string;
     isClosed: boolean;
-    dossier: number;    
+    dossier: number;
 }

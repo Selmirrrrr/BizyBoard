@@ -52,6 +52,7 @@ import {
   AppFooterModule,
   AppSidebarModule,
 } from '@coreui/angular';
+import { ResetPwdComponent } from './views/reset-pwd/reset-pwd.component';
 
 export function tokenGetter() {
   return localStorage.getItem('auth_token');
@@ -65,7 +66,8 @@ export function tokenGetter() {
     P500Component,
     LoginComponent,
     RegisterComponent,
-    FetchDataComponent
+    FetchDataComponent,
+    ResetPwdComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

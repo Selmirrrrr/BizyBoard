@@ -78,6 +78,14 @@ export class UserService extends BaseService {
       catchError(this.handleError)).source;
   }
 
+  resetPassword(email: string) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http
+      .post(this.baseUrl + 'api/auth/forgotpassword', JSON.stringify({email}), {headers})
+      .pipe(map(res => true), catchError(this.handleError)).source;
+  }
+
   logout() {
     localStorage.removeItem('auth_token');
     this.loggedIn = false;

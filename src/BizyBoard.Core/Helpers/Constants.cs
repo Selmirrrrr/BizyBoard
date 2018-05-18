@@ -15,9 +15,15 @@
             public static class Errors
             {
                 public static (string code, string message) Base = ("base_error", "Un erreur est survenue...");
+                public static (string code, string message) EmptyEmail = ("emtpy_email", "L'email n'est pas renseigné.");
                 public static (string code, string message) NoWinBizFolder = ("no_winbiz_folder", "Pas de dossier ouvert dans WinBIZ Cloud");
                 public static (string code, string message) LoginFailure = ("login_failure", "Mot de passe ou nom d'utilisateur incorrect.");
                 public static (string code, string message) DuplicateEmail = ("duplicate_email", "Email déjà existant.");
+            }
+
+            public static class Success
+            {
+                public static (string code, string message) PasswordReset = ("password_reset", "Un email a été envoyé avec les instructions à suivre.");
             }
         }
     }

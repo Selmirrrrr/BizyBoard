@@ -2,54 +2,40 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../shared/services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserRegistration } from '../../shared/models/user.registration.interface';
-import { Credentials } from '../../shared/models/credentials.interface';
+import { Credentials, Email } from '../../shared/models/credentials.interface';
 import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: 'login.component.html'
+  templateUrl: 'reset-pwd.component.html'
 })
-export class LoginComponent implements OnInit, OnDestroy {
-
-  private subscription: Subscription;
-
-  brandNew: boolean;
+export class ResetPwdComponent implements OnInit, OnDestroy {
+  message: string;
+  email: Email = { email: ''};
   errors: string[] = [];
   isRequesting: boolean;
   submitted = false;
-  credentials: Credentials = { email: '', password: '' };
 
   constructor(private userService: UserService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
     ngOnInit() {
 
-    // subscribe to router event
-    this.subscription = this.activatedRoute.queryParams.subscribe(
-      (param: any) => {
-         this.brandNew = param['brandNew'];
-         this.credentials.email = param['email'];
-      });
-  }
+    }
 
-   ngOnDestroy() {
-    // prevent memory leak by unsubscribing
-    this.subscription.unsubscribe();
-  }
+    ngOnDestroy() {
 
-  login({ value, valid }: { value: Credentials, valid: boolean }) {
+    }
+
+  resetPassword({ value, valid }: { value: Email, valid: boolean }) {
     this.submitted = true;
     this.isRequesting = true;
     this.errors = [];
     if (valid) {
-      this.userService.login(value.email, value.password)
+      this.userService.resetPassword(value.email)
         .pipe(finalize(() => this.isRequesting = false))
         .subscribe(
         result => {
-          console.log(result);
-          if (result) {
-             this.router.navigate(['/dashboard']);
-          }
+          this.message = JSON.parse(result);
         },
         errors => {
           // this.successfulSave = false;

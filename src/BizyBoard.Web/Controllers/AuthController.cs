@@ -17,6 +17,7 @@
     using Microsoft.Extensions.Options;
     using Models.DbEntities;
     using Models.ViewModels;
+    using Services;
     using static Core.Helpers.Constants.Strings;
 
     [Route("api/[controller]/[action]")]
@@ -28,6 +29,7 @@
         private readonly ILogger<AuthController> _logger;
         private readonly RolesService _rolesService;
         private readonly IOuinneBiseSharpFactory _factory;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly JwtIssuerOptions _jwtOptions;
 
@@ -37,6 +39,7 @@
                                  IOptions<JwtIssuerOptions> jwtOptions,
                                  RolesService rolesService,
                                  IOuinneBiseSharpFactory factory,
+                                 IEmailService emailService,
                                  IMapper mapper,
                                  ILogger<AuthController> logger)
         {
@@ -46,6 +49,7 @@
             _jwtFactory = jwtFactory;
             _rolesService = rolesService;
             _factory = factory;
+            _emailService = emailService;
             _mapper = mapper;
             _userManager = userManager;
         }
@@ -133,6 +137,27 @@
                 return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.Base, ModelState));
             }
         }
+
+        [HttpPost]  
+        //[ValidateAntiForgeryToken]  
+        public async Task<IActionResult> ForgotPassword([FromBody]ResetPwdViewModel vm)  
+        {  
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (string.IsNullOrEmpty(vm.Email)) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.EmptyEmail, ModelState));
+  
+            var user = await _userManager.FindByEmailAsync(vm.Email);
+            if (user == null) return new OkObjectResult(Success.PasswordReset);
+  
+            if (!await _userManager.IsEmailConfirmedAsync(user)) return new OkObjectResult(Success.PasswordReset);
+  
+            var confrimationCode = await _userManager.GeneratePasswordResetTokenAsync(user);
+  
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
+
+            _emailService.SendEmailAsync(user.Email, "Reset Password", baseUrl + "?code=" + confrimationCode.Replace("&", "&amp;") + "&userId=" + user.Id);
+  
+            return new OkObjectResult(Success.PasswordReset);
+        }  
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
         {
