@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using System.Web;
     using Auth;
     using AutoMapper;
     using Bizy.OuinneBiseSharp.Extensions;
@@ -153,7 +154,7 @@
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/#/updatepwd";
 
-            await _emailService.SendEmailAsync(user.Email, "Demande de réinitialisation de mot de passe", baseUrl + "?token=" + token.Replace("&", "&amp;") + "&email=" + user.Email);
+            await _emailService.SendEmailAsync(user.Email, "Demande de réinitialisation de mot de passe", baseUrl + "?token=" + HttpUtility.HtmlEncode(token) + "&email=" + user.Email);
 
             return new OkObjectResult(Success.PasswordReset);
         }
@@ -164,10 +165,10 @@
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var user = await _userManager.FindByEmailAsync(vm.Email);
 
-            var result = await _userManager.ResetPasswordAsync(user, vm.Token, vm.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(user, HttpUtility.HtmlDecode(vm.Token)?.Replace(" ", "+"), vm.NewPassword);
             if (result.Succeeded) return new OkObjectResult(Success.PasswordResetUpdate);
 
-            return new BadRequestObjectResult(result);
+            return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.PasswordResetUpdateError, ModelState));
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)

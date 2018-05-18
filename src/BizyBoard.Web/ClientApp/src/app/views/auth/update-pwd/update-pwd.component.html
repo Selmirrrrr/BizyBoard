@@ -13,7 +13,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">@</span>
                     </div>
-                    <input id="email" type="text" required name="email" class="form-control" placeholder="Email" ngModel #email="ngModel">
+                    <input id="email" type="text" required name="email" class="form-control" placeholder="Email" [ngModel]="credentials.email">
                   </div>
                   <div class="input-group mb-4">
                     <div class="input-group-prepend">
@@ -21,7 +21,7 @@
                         <i class="icon-lock"></i>
                       </span>
                     </div>
-                    <input type="password" class="form-control" placeholder="Mot de passe" id="newPassword" required name="newPassword" ngModel>
+                    <input type="password" class="form-control" placeholder="Mot de passe" id="newPassword" required name="newPassword" [ngModel]="credentials.newPassword">
                   </div>
                   <div class="input-group mb-4">
                     <div class="input-group-prepend">
@@ -30,7 +30,7 @@
                       </span>
                     </div>
                     <input type="password" class="form-control" placeholder="Confirmation mot de passe" id="passwordConfirmation" required name="passwordConfirmation"
-                      ngModel>
+                    [ngModel]="credentials.passwordConfirmation">
                   </div>
                   <input type="hidden" class="form-control" id="token" required name="token" [ngModel]="credentials.token" ngModel>
                   <alert [dismissible]="true" *ngFor="let error of errors" type="warning">

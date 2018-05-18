@@ -15,7 +15,7 @@
                         <i class="icon-user"></i>
                       </span>
                     </div>
-                    <input id="email" type="text" required name="email" class="form-control" placeholder="email@exemple.ch" tmfocus ngmodel>
+                    <input id="email" type="text" required name="email" class="form-control" placeholder="email@exemple.ch" tmfocus [ngModel]="email.email">
                   </div>
                   <alert [dismissible]="true" *ngFor="let error of errors" type="warning">
                     {{ error }}
