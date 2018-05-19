@@ -20,6 +20,7 @@
                 public static (string code, string message) LoginFailure = ("login_failure", "Mot de passe ou nom d'utilisateur incorrect.");
                 public static (string code, string message) DuplicateEmail = ("duplicate_email", "Email déjà existant.");
                 public static (string code, string message) PasswordResetUpdateError = ("password_reset_update_error", "Erreur durant la mise à jour du mot de passe.");
+                public static (string code, string message) UserNotFound = ("user_not_found", "User introuvable dans la base de données");
             }
 
             public static class Success

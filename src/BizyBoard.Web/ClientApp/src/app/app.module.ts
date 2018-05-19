@@ -1,8 +1,7 @@
 import { UpdatePwdComponent } from './views/auth/update-pwd/update-pwd.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -23,8 +22,6 @@ import { RouterModule } from '@angular/router';
 import { DefaultLayoutComponent } from './containers';
 
 import { AppComponent } from './app.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/auth/login/login.component';
@@ -67,11 +64,18 @@ export function tokenGetter() {
     P500Component,
     LoginComponent,
     RegisterComponent,
-    FetchDataComponent,
     ResetPwdComponent,
     UpdatePwdComponent
   ],
   imports: [
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['localhost:52003/'],
+        blacklistedRoutes: ['localhost:3001/login/']
+      }
+    }),
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     BrowserModule,
     AppRoutingModule,
@@ -85,16 +89,7 @@ export function tokenGetter() {
     TabsModule.forRoot(),
     AlertModule.forRoot(),
     ChartsModule,
-    HttpClientModule,
-    FormsModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:3001, localhost:52003'],
-        blacklistedRoutes: ['localhost:3001/login/']
-      }
-    }),
-    HttpModule
+    FormsModule
   ],
   providers: [{
     provide: LocationStrategy,

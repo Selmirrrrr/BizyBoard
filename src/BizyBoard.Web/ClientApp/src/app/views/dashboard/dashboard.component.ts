@@ -1,3 +1,4 @@
+import { DataService } from './../../shared/services/data.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
@@ -7,7 +8,11 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
   templateUrl: 'dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
+  constructor(private dataService: DataService) {
 
+  }
+
+  docInfoVenteChiffreAffaire: any;
   // lineChart1
   public lineChart1Data: Array<any> = [
     {
@@ -241,7 +246,7 @@ export class DashboardComponent implements OnInit {
       position: 'nearest',
       callbacks: {
         labelColor: function(tooltipItem, chart) {
-          return { backgroundColor: chart.data.datasets[tooltipItem.datasetIndex].borderColor }
+          return { backgroundColor: chart.data.datasets[tooltipItem.datasetIndex].borderColor };
         }
       }
     },
@@ -382,8 +387,15 @@ export class DashboardComponent implements OnInit {
       this.mainChartData1.push(this.random(50, 200));
       this.mainChartData2.push(this.random(80, 100));
       this.mainChartData3.push(65);
+      this.getDocInfoVenteChiffreAffaire();
     }
   }
 
+  getDocInfoVenteChiffreAffaire() {
+    this.docInfoVenteChiffreAffaire = this.dataService.getDocInfoVenteChiffreAffaire();
+    console.log(this.docInfoVenteChiffreAffaire);
+  }
+
+  // tslint:disable-next-line:member-ordering
   radioModel = 'Month';
 }

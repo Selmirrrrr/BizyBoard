@@ -3,43 +3,62 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using Auth;
     using Bizy.OuinneBiseSharp.Enums;
     using Bizy.OuinneBiseSharp.Services;
     using Core.Helpers;
+    using Data.Context;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Models.DbEntities;
+    using Microsoft.AspNetCore.Authorization;
 
+    [Authorize(Policy = "Admin")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     public class BoardController : Controller
     {
-        private readonly OuinneBiseSharpService _service;
+        private OuinneBiseSharpService _service;
+        private readonly AppDbContext _context;
+        private readonly IOuinneBiseSharpFactory _factory;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<BoardController> _logger;
-        private readonly AppUser _user;
 
-        public BoardController(IOuinneBiseSharpFactory factory, UserManager<AppUser> userManager, ILogger<BoardController> logger)
+        public BoardController(AppDbContext context, IOuinneBiseSharpFactory factory, UserManager<AppUser> userManager, ILogger<BoardController> logger)
         {
-            _service = factory.GetInstance("", "sdasd", "fdsdfs");
+            _context = context;
+            _factory = factory;
             _userManager = userManager;
             _logger = logger;
         }
 
-
+        [HttpGet]
         public async Task<IActionResult> GetDocInfoVenteChiffreAffaire()
         {
             int.TryParse(User.Claims.FirstOrDefault(c => string.Equals(c.Type, Constants.Strings.JwtClaimIdentifiers.Id, StringComparison.InvariantCultureIgnoreCase))?.Value, out var userId);
 
-            var user = _userManager.FindByIdAsync(userId.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
 
-            if (user == null) return BadRequest("Tenant introuvable dans la base de données.");
+            if (user == null) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.UserNotFound, ModelState));
 
-            var result = await _service.DocInfo(DocInfoMethodsEnum.VenteChiffreAffaire, DateTime.MinValue, DateTime.MaxValue);
+            await _context.Entry(user).Reference(x => x.Tenant).LoadAsync();
 
-            return Ok(result);
+            _service = _factory.GetInstance(user);
+
+            try
+            {
+                var result = await _service.DocInfo(DocInfoMethodsEnum.VenteChiffreAffaire, DateTime.MinValue, DateTime.MaxValue);
+                return Ok(result);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(nameof(GetDocInfoVenteChiffreAffaire), e);
+                return new BadRequestObjectResult(Constants.Strings.Errors.Base);
+            }
+
         }
     }
 }
