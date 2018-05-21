@@ -11,12 +11,10 @@
     public class Repository<T> : IRepository<T> where T : class, IEntityBase, new()
     {
         private readonly AppDbContext _context;
-        private readonly AppUser _user;
 
-        public Repository(AppDbContext context, AppUser user)
+        public Repository(AppDbContext context)
         {
             _context = context;
-            _user = user;
         }
 
         public virtual IEnumerable<T> GetAll() => _context.Set<T>().AsEnumerable();
