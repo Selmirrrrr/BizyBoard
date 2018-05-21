@@ -53,9 +53,8 @@ export class UserService extends BaseService {
       company: string,
       dossier: number,
       year: number): Observable<UserRegistration> {
-    const body = JSON.stringify({ email, password, firstName, lastName, winBizUsername, winBizPassword, company, dossier, year });
-
-    return this.http.post(this.baseUrl + 'api/auth/register', body).pipe(
+    return this.http.post(this.baseUrl + 'api/auth/register', {
+      email, password, firstName, lastName, winBizUsername, winBizPassword, company, dossier, year }).pipe(
       map(res => true), catchError(this.handleError)).source;
   }
 

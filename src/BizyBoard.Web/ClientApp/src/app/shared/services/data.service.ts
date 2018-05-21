@@ -33,9 +33,9 @@ export class DataService extends BaseService {
       winBizUsername: string,
       winBizPassword: string,
       company: string): Observable<Dossier[]> {
-    const body = JSON.stringify({ email, password, firstName, lastName, winBizUsername, winBizPassword, company });
 
-    return this.http.post<Dossier[]>(this.baseUrl + 'api/auth/testWinBizCredentials', body).pipe(
+    return this.http.post<Dossier[]>(this.baseUrl + 'api/auth/testWinBizCredentials', {
+      email, password, firstName, lastName, winBizUsername, winBizPassword, company }).pipe(
       map(res => res, catchError(this.handleError)));
   }
   getDocInfoVenteChiffreAffaire() {
