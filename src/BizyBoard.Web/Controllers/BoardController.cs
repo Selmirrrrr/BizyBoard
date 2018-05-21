@@ -13,6 +13,7 @@
     using Microsoft.Extensions.Logging;
     using Models.DbEntities;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.EntityFrameworkCore;
 
     [Authorize(Policy = "Admin")]
     [Route("api/[controller]")]
@@ -38,18 +39,25 @@
         public async Task<IActionResult> GetDocInfoVenteChiffreAffaire()
         {
             int.TryParse(User.Claims.FirstOrDefault(c => string.Equals(c.Type, Constants.Strings.JwtClaimIdentifiers.Id, StringComparison.InvariantCultureIgnoreCase))?.Value, out var userId);
+            var company = User.Claims.FirstOrDefault(c => string.Equals(c.Type, Constants.Strings.JwtClaimIdentifiers.Company, StringComparison.InvariantCultureIgnoreCase))?.Value;
 
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user == null) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.UserNotFound, ModelState));
 
-            await _context.Entry(user).Reference(x => x.Tenant).LoadAsync();
+            try
+            {
 
-            _service = _factory.GetInstance(user);
+                _service = _factory.GetInstance(company, user);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             try
             {
-                var result = await _service.DocInfo(DocInfoMethodsEnum.VenteChiffreAffaire, DateTime.MinValue, DateTime.MaxValue);
+                var result = await _service.DocInfo(DocInfoMethodsEnum.VenteChiffreAffaire, DateTime.MaxValue, DateTime.MinValue);
                 return Ok(result);
 
             }

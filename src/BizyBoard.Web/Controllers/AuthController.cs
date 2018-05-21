@@ -1,7 +1,6 @@
 ﻿namespace BizyBoard.Web.Controllers
 {
     using System;
-    using System.Diagnostics;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
@@ -9,11 +8,11 @@
     using Auth;
     using AutoMapper;
     using Bizy.OuinneBiseSharp.Extensions;
-    using Core.Helpers;
     using Core.Services;
     using Data.Context;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Models.DbEntities;
@@ -183,7 +182,11 @@
             // check the credentials
             if (!await _userManager.CheckPasswordAsync(userToVerify, password)) return await Task.FromResult<ClaimsIdentity>(null);
             var roles = await _userManager.GetRolesAsync(userToVerify);
-            return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, userToVerify.TenantId, roles));
+
+            var company = await _dbContext.Tenants.Where(t => t.Id == userToVerify.TenantId).Select(t => new Tenant { Name = t.Name }).FirstOrDefaultAsync();
+
+
+            return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, company.Name, userToVerify.TenantId, roles));
         }
     }
 }

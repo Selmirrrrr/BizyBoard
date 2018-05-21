@@ -28,6 +28,7 @@
                 new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
                 identity.FindFirst(Constants.Strings.JwtClaimIdentifiers.Id),
+                identity.FindFirst(Constants.Strings.JwtClaimIdentifiers.Company),
                 identity.FindFirst(Constants.Strings.JwtClaimIdentifiers.Tenant),
                 identity.FindFirst(Constants.Strings.JwtClaimIdentifiers.Role)
             };
@@ -46,12 +47,13 @@
             return encodedJwt;
         }
 
-        public ClaimsIdentity GenerateClaimsIdentity(string userName, int id, int tenantId, IList<string> role)
+        public ClaimsIdentity GenerateClaimsIdentity(string userName, int id, string company, int tenantId, IList<string> role)
         {
             var claims = new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
             {
                 new Claim(Constants.Strings.JwtClaimIdentifiers.Id, id.ToString()),
-                new Claim(Constants.Strings.JwtClaimIdentifiers.Tenant, tenantId.ToString()),
+                new Claim(Constants.Strings.JwtClaimIdentifiers.Company, company),
+                new Claim(Constants.Strings.JwtClaimIdentifiers.Tenant, tenantId.ToString())
             });
             claims.AddClaims(role.Select(c => new Claim(Constants.Strings.JwtClaimIdentifiers.Role, c)));
             return claims;

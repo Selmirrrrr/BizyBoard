@@ -7,6 +7,6 @@
     public interface IJwtFactory
     {
         Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity);
-        ClaimsIdentity GenerateClaimsIdentity(string userName, int id, int tenantId, IList<string> role);
+        ClaimsIdentity GenerateClaimsIdentity(string userName, int id, string company, int tenantId, IList<string> role);
     }
 }
