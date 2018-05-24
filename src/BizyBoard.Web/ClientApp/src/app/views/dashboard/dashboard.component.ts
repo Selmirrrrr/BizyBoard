@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
   docInfoVenteChiffreAffaireValues: any[];
   docInfoVenteChiffreAffaireLabels: string[] = [];
   mainChartMonths = 6;
-  
+
   constructor(private dataService: DataService) {
     this.getDocInfoVenteChiffreAffaire();
 
@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
       console.log(this.docInfoVenteChiffreAffaire);
       this.docInfoVenteChiffreAffaireLabels = data.map(a => a.label);
       console.log(this.docInfoVenteChiffreAffaireLabels);
-      this.docInfoVenteChiffreAffaireValues = data.map(r => {data :r.value})
+      this.docInfoVenteChiffreAffaireValues = [{data : data.map(d => d.value), label : 'Test'}];
       console.log(this.docInfoVenteChiffreAffaireValues);
     },
     error => () => {
