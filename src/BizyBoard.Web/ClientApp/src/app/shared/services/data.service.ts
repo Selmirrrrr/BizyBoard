@@ -1,3 +1,4 @@
+import { LabelValue } from './data.service';
 import { Dossier } from './../models/credentials.interface';
 import { Injectable, Inject } from '@angular/core';
 import { Response, Headers, RequestOptions } from '@angular/http';
@@ -26,23 +27,26 @@ export class DataService extends BaseService {
     this.baseUrl = baseUrl;
   }
 
-    testWinBizCredentials(email: string,
-      password: string,
-      firstName: string,
-      lastName: string,
-      winBizUsername: string,
-      winBizPassword: string,
-      company: string): Observable<Dossier[]> {
+  testWinBizCredentials(email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    winBizUsername: string,
+    winBizPassword: string,
+    company: string): Observable<Dossier[]> {
 
     return this.http.post<Dossier[]>(this.baseUrl + 'api/auth/testWinBizCredentials', {
-      email, password, firstName, lastName, winBizUsername, winBizPassword, company }).pipe(
+      email, password, firstName, lastName, winBizUsername, winBizPassword, company
+    }).pipe(
       map(res => res, catchError(this.handleError)));
   }
-  getDocInfoVenteChiffreAffaire() {
-    let result: any;
-    this.http.get(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaire').subscribe(r => {
-      result = r;
-    }, error => result = error);
-    return result;
+
+  public getDocInfoVenteChiffreAffaire(nbMonths: number): Observable<LabelValue[]> {
+    return this.http.get<LabelValue[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaire/' + nbMonths);
   }
+}
+
+export interface LabelValue {
+  label: string;
+  value: number;
 }

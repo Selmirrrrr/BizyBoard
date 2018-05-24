@@ -21,6 +21,7 @@
                 public static (string code, string message) DuplicateEmail = ("duplicate_email", "Email déjà existant.");
                 public static (string code, string message) PasswordResetUpdateError = ("password_reset_update_error", "Erreur durant la mise à jour du mot de passe.");
                 public static (string code, string message) UserNotFound = ("user_not_found", "User introuvable dans la base de données");
+                public static (string code, string message) CompanyNotFound = ("company_not_found", "L'entreprise WinBIZ est vide. Essayez de vous connecter à nouveau. ");
             }
 
             public static class Success
