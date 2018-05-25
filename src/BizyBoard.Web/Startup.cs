@@ -27,6 +27,7 @@ namespace BizyBoard.Web
     using Microsoft.IdentityModel.Tokens;
     using Models.DbEntities;
     using Models.Validations;
+    using Services;
     using Swashbuckle.AspNetCore.Swagger;
 
     public class Startup
@@ -139,6 +140,7 @@ namespace BizyBoard.Web
                 });
             });
 
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<RolesService>();
             services.AddTransient<IOuinneBiseSharpFactory, OuinneBiseSharpFactory>();

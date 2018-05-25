@@ -4,19 +4,20 @@
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using System.Web;
     using Auth;
     using AutoMapper;
-    using Bizy.OuinneBiseSharp.Extensions;
-    using Core.Helpers;
     using Core.Services;
     using Data.Context;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore.Internal;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Models.DbEntities;
     using Models.ViewModels;
+    using Services;
+    using static Core.Helpers.Constants.Strings;
 
     [Route("api/[controller]/[action]")]
     public class AuthController : ControllerBase
@@ -27,6 +28,7 @@
         private readonly ILogger<AuthController> _logger;
         private readonly RolesService _rolesService;
         private readonly IOuinneBiseSharpFactory _factory;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly JwtIssuerOptions _jwtOptions;
 
@@ -36,6 +38,7 @@
                                  IOptions<JwtIssuerOptions> jwtOptions,
                                  RolesService rolesService,
                                  IOuinneBiseSharpFactory factory,
+                                 IEmailService emailService,
                                  IMapper mapper,
                                  ILogger<AuthController> logger)
         {
@@ -45,6 +48,7 @@
             _jwtFactory = jwtFactory;
             _rolesService = rolesService;
             _factory = factory;
+            _emailService = emailService;
             _mapper = mapper;
             _userManager = userManager;
         }
@@ -53,8 +57,8 @@
         public async Task<IActionResult> Register([FromBody]RegistrationViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            if (_userManager.Users.Any(u => u.NormalizedEmail == model.Email))
-                return new BadRequestObjectResult(Errors.AddErrorToModelState("account_creation_failure", "Email déjà existant.", ModelState));
+            if (await _userManager.Users.AnyAsync(u => u.NormalizedEmail == model.Email))
+                return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.DuplicateEmail, ModelState));
 
             var userIdentity = _mapper.Map<AppUser>(model);
 
@@ -68,7 +72,7 @@
             };
 
             tenant = _dbContext.Tenants.Add(tenant).Entity;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             userIdentity.Tenant = tenant;
 
@@ -78,7 +82,7 @@
             {
                 _dbContext.Tenants.Remove(tenant);
                 await _dbContext.SaveChangesAsync();
-                return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+                return new BadRequestObjectResult(ErrorsHelper.AddErrorsToModelState(result, ModelState));
             }
 
             var user = await _userManager.FindByEmailAsync(userIdentity.Email);
@@ -89,8 +93,6 @@
             tenant.LastUpdateBy = user;
 
             _dbContext.Tenants.Update(tenant);
-
-            _dbContext.SaveChanges();
 
             await _dbContext.SaveChangesAsync();
 
@@ -103,33 +105,65 @@
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var identity = await GetClaimsIdentity(credentials.Email, credentials.Password);
-            if (identity == null) return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid username or password.", ModelState));
+            if (identity == null) return BadRequest(ErrorsHelper.AddErrorToModelState(Errors.LoginFailure, ModelState));
 
             var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.Email, _jwtOptions);
 
             return new OkObjectResult(jwt);
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> TestWinBizCredentials([FromBody] RegistrationViewModel credentials)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword.Encrypt(Constants.Strings.WinBizEncryptionKey));
+            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword);
 
             try
             {
                 var folders = await service.Folders();
-                if (folders.ErrorsCount > 0) return new BadRequestObjectResult(folders.UserErrorMsg);
-                if (folders.Value.Count < 1) return new BadRequestObjectResult("Pas de dossier ouvert dans WinBIZ Cloud");
+                if (folders.ErrorsCount > 0) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState("winbiz_error", folders.UserErrorMsg, ModelState));
+                if (folders.Value.Count < 1) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.NoWinBizFolder, ModelState));
 
                 return new OkObjectResult(folders.Value.Select(d => new { d.Number, d.Name, Exercices = d.Exercices.Select(e => new { e.Year, e.Start, e.End, e.Description, e.IsClosed, Dossier = d.Number }) }).ToList());
             }
             catch (Exception e)
             {
-                return new BadRequestObjectResult(e);
+                credentials.CleanPasswords();
+                _logger.LogCritical(e, nameof(TestWinBizCredentials), credentials);
+                return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.Base, ModelState));
             }
+        }
 
+        [HttpPost]
+        //[ValidateAntiForgeryToken]  
+        public async Task<IActionResult> ForgotPassword([FromBody]ResetPwdViewModel vm)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(vm.Email);
+            if (user == null) return new OkObjectResult(Success.PasswordReset);
+
+            if (!await _userManager.IsEmailConfirmedAsync(user)) return new OkObjectResult(Success.PasswordReset);
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/#/updatepwd";
+
+            await _emailService.SendEmailAsync(user.Email, "Demande de réinitialisation de mot de passe", baseUrl + "?token=" + HttpUtility.HtmlEncode(token) + "&email=" + user.Email);
+
+            return new OkObjectResult(Success.PasswordReset);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword([FromBody]ResetPwdUpdateViewModel vm)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var user = await _userManager.FindByEmailAsync(vm.Email);
+
+            var result = await _userManager.ResetPasswordAsync(user, HttpUtility.HtmlDecode(vm.Token)?.Replace(" ", "+"), vm.NewPassword);
+            if (result.Succeeded) return new OkObjectResult(Success.PasswordResetUpdate);
+
+            return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.PasswordResetUpdateError, ModelState));
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
@@ -144,9 +178,11 @@
             // check the credentials
             if (!await _userManager.CheckPasswordAsync(userToVerify, password)) return await Task.FromResult<ClaimsIdentity>(null);
             var roles = await _userManager.GetRolesAsync(userToVerify);
-            return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, userToVerify.TenantId, roles));
 
-            // Credentials are invalid, or account doesn't exist
+            var company = await _dbContext.Tenants.Where(t => t.Id == userToVerify.TenantId).Select(t => new Tenant { Name = t.Name }).FirstOrDefaultAsync();
+
+
+            return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, company.Name, userToVerify.TenantId, roles));
         }
     }
 }

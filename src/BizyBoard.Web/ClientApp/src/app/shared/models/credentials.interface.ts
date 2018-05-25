@@ -3,10 +3,22 @@ export interface Credentials {
     password: string;
 }
 
+export interface UpdatePwdModel {
+    email: string;
+    newPassword: string;
+    passwordConfirmation: string;
+    token: string;
+}
+
+
+export interface Email {
+    email: string;
+}
+
 export interface Dossier {
     number: number;
     name: string;
-    exercices: Exercice[]
+    exercices: Exercice[];
 }
 
 export interface Exercice {
@@ -15,5 +27,5 @@ export interface Exercice {
     end: Date;
     description: string;
     isClosed: boolean;
-    dossier: number;    
+    dossier: number;
 }

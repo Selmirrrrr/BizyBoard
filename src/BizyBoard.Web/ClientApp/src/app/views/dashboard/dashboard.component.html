@@ -18,16 +18,12 @@
           <div>Members online</div>
         </div>
         <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
-          <canvas baseChart class="chart"
-          [datasets]="lineChart1Data"
-          [labels]="lineChart1Labels"
-          [options]="lineChart1Options"
-          [colors]="lineChart1Colours"
-          [legend]="lineChart1Legend"
-          [chartType]="lineChart1Type"></canvas>
+          <canvas baseChart class="chart" [datasets]="lineChart1Data" [labels]="lineChart1Labels" [options]="lineChart1Options" [colors]="lineChart1Colours"
+            [legend]="lineChart1Legend" [chartType]="lineChart1Type"></canvas>
         </div>
       </div>
-    </div><!--/.col-->
+    </div>
+    <!--/.col-->
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-info">
         <div class="card-body pb-0">
@@ -38,16 +34,12 @@
           <div>Members online</div>
         </div>
         <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
-          <canvas baseChart class="chart"
-          [datasets]="lineChart2Data"
-          [labels]="lineChart2Labels"
-          [options]="lineChart2Options"
-          [colors]="lineChart2Colours"
-          [legend]="lineChart2Legend"
-          [chartType]="lineChart2Type"></canvas>
+          <canvas baseChart class="chart" [datasets]="lineChart2Data" [labels]="lineChart2Labels" [options]="lineChart2Options" [colors]="lineChart2Colours"
+            [legend]="lineChart2Legend" [chartType]="lineChart2Type"></canvas>
         </div>
       </div>
-    </div><!--/.col-->
+    </div>
+    <!--/.col-->
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-warning">
         <div class="card-body pb-0">
@@ -65,16 +57,12 @@
           <div>Members online</div>
         </div>
         <div class="chart-wrapper mt-3" style="height:70px;">
-          <canvas baseChart class="chart"
-          [datasets]="lineChart3Data"
-          [labels]="lineChart3Labels"
-          [options]="lineChart3Options"
-          [colors]="lineChart3Colours"
-          [legend]="lineChart3Legend"
-          [chartType]="lineChart3Type"></canvas>
+          <canvas baseChart class="chart" [datasets]="lineChart3Data" [labels]="lineChart3Labels" [options]="lineChart3Options" [colors]="lineChart3Colours"
+            [legend]="lineChart3Legend" [chartType]="lineChart3Type"></canvas>
         </div>
       </div>
-    </div><!--/.col-->
+    </div>
+    <!--/.col-->
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-danger">
         <div class="card-body pb-0">
@@ -92,41 +80,67 @@
           <div>Members online</div>
         </div>
         <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
-          <canvas baseChart class="chart"
-          [datasets]="barChart1Data"
-          [labels]="barChart1Labels"
-          [options]="barChart1Options"
-          [colors]="barChart1Colours"
-          [legend]="barChart1Legend"
-          [chartType]="barChart1Type"></canvas>
+          <canvas baseChart class="chart" [datasets]="barChart1Data" [labels]="barChart1Labels" [options]="barChart1Options" [colors]="barChart1Colours"
+            [legend]="barChart1Legend" [chartType]="barChart1Type"></canvas>
         </div>
       </div>
-    </div><!--/.col-->
-  </div><!--/.row-->
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+  <div class="row">
+    <div class="col-sm-12 col-lg-12">
+
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-5">
+              <h4 class="card-title mb-0">Chiffre d'affaires mensuel</h4>
+            </div>
+            <!--/.col-->
+            <div class="col-sm-7 d-none d-md-block">
+              <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(3)" btnRadio="3">3 mois</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(6)" btnRadio="6">6 mois</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(12)" btnRadio="12">12 mois</label>
+              </div>
+            </div>
+            <!--/.col-->
+          </div>
+          <!--/.row-->
+          <div class="chart-wrapper" style="height:300px;margin-top:40px;">
+            <canvas style="height:300px;margin-top:40px;" *ngIf="docInfoVenteChiffreAffaireLabels.length > 1" baseChart class="chart"
+              [labels]="docInfoVenteChiffreAffaireLabels" [datasets]="docInfoVenteChiffreAffaireValues" [options]="barChartOptions"
+              [legend]="false" [colors]="colors" chartType="bar"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="card">
     <div class="card-body">
       <div class="row">
         <div class="col-sm-5">
           <h4 class="card-title mb-0">Traffic</h4>
           <div class="small text-muted">November 2017</div>
-        </div><!--/.col-->
+        </div>
+        <!--/.col-->
         <div class="col-sm-7 d-none d-md-block">
-          <button type="button" class="btn btn-primary float-right"><i class="icon-cloud-download"></i></button>
+          <button type="button" class="btn btn-primary float-right">
+            <i class="icon-cloud-download"></i>
+          </button>
           <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
             <label class="btn btn-outline-secondary" [(ngModel)]="radioModel" btnRadio="Day" id="option1">Day</label>
             <label class="btn btn-outline-secondary" [(ngModel)]="radioModel" btnRadio="Month" id="option2">Month</label>
             <label class="btn btn-outline-secondary" [(ngModel)]="radioModel" btnRadio="Year" id="option3">Year</label>
           </div>
-        </div><!--/.col-->
-      </div><!--/.row-->
+        </div>
+        <!--/.col-->
+      </div>
+      <!--/.row-->
       <div class="chart-wrapper" style="height:300px;margin-top:40px;">
-        <canvas baseChart class="chart"
-        [datasets]="mainChartData"
-        [labels]="mainChartLabels"
-        [options]="mainChartOptions"
-        [colors]="mainChartColours"
-        [legend]="mainChartLegend"
-        [chartType]="mainChartType"></canvas>
+        <canvas baseChart class="chart" [datasets]="mainChartData" [labels]="mainChartLabels" [options]="mainChartOptions" [colors]="mainChartColours"
+          [legend]="mainChartLegend" [chartType]="mainChartType"></canvas>
       </div>
     </div>
     <div class="card-footer">
@@ -176,13 +190,8 @@
         <div class="brand-card-header bg-facebook">
           <i class="fa fa-facebook"></i>
           <div class="chart-wrapper">
-            <canvas baseChart class="chart"
-            [datasets]="brandBoxChartData1"
-            [labels]="brandBoxChartLabels"
-            [options]="brandBoxChartOptions"
-            [colors]="brandBoxChartColours"
-            [legend]="brandBoxChartLegend"
-            [chartType]="brandBoxChartType"></canvas>
+            <canvas baseChart class="chart" [datasets]="brandBoxChartData1" [labels]="brandBoxChartLabels" [options]="brandBoxChartOptions"
+              [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend" [chartType]="brandBoxChartType"></canvas>
           </div>
         </div>
         <div class="brand-card-body">
@@ -196,19 +205,15 @@
           </div>
         </div>
       </div>
-    </div><!--/.col-->
+    </div>
+    <!--/.col-->
     <div class="col-sm-6 col-lg-3">
       <div class="brand-card">
         <div class="brand-card-header bg-twitter">
           <i class="fa fa-twitter"></i>
           <div class="chart-wrapper">
-            <canvas baseChart class="chart"
-            [datasets]="brandBoxChartData2"
-            [labels]="brandBoxChartLabels"
-            [options]="brandBoxChartOptions"
-            [colors]="brandBoxChartColours"
-            [legend]="brandBoxChartLegend"
-            [chartType]="brandBoxChartType"></canvas>
+            <canvas baseChart class="chart" [datasets]="brandBoxChartData2" [labels]="brandBoxChartLabels" [options]="brandBoxChartOptions"
+              [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend" [chartType]="brandBoxChartType"></canvas>
           </div>
         </div>
         <div class="brand-card-body">
@@ -222,19 +227,15 @@
           </div>
         </div>
       </div>
-    </div><!--/.col-->
+    </div>
+    <!--/.col-->
     <div class="col-sm-6 col-lg-3">
       <div class="brand-card">
         <div class="brand-card-header bg-linkedin">
           <i class="fa fa-linkedin"></i>
           <div class="chart-wrapper">
-            <canvas baseChart class="chart"
-            [datasets]="brandBoxChartData3"
-            [labels]="brandBoxChartLabels"
-            [options]="brandBoxChartOptions"
-            [colors]="brandBoxChartColours"
-            [legend]="brandBoxChartLegend"
-            [chartType]="brandBoxChartType"></canvas>
+            <canvas baseChart class="chart" [datasets]="brandBoxChartData3" [labels]="brandBoxChartLabels" [options]="brandBoxChartOptions"
+              [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend" [chartType]="brandBoxChartType"></canvas>
           </div>
         </div>
         <div class="brand-card-body">
@@ -248,19 +249,15 @@
           </div>
         </div>
       </div>
-    </div><!--/.col-->
+    </div>
+    <!--/.col-->
     <div class="col-sm-6 col-lg-3">
       <div class="brand-card">
         <div class="brand-card-header bg-google-plus">
           <i class="fa fa-google-plus"></i>
           <div class="chart-wrapper">
-            <canvas baseChart class="chart"
-            [datasets]="brandBoxChartData4"
-            [labels]="brandBoxChartLabels"
-            [options]="brandBoxChartOptions"
-            [colors]="brandBoxChartColours"
-            [legend]="brandBoxChartLegend"
-            [chartType]="brandBoxChartType"></canvas>
+            <canvas baseChart class="chart" [datasets]="brandBoxChartData4" [labels]="brandBoxChartLabels" [options]="brandBoxChartOptions"
+              [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend" [chartType]="brandBoxChartType"></canvas>
           </div>
         </div>
         <div class="brand-card-body">
@@ -274,8 +271,10 @@
           </div>
         </div>
       </div>
-    </div><!--/.col-->
-  </div><!--/.row-->
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
   <div class="row">
     <div class="col-md-12">
       <div class="card">
@@ -292,15 +291,18 @@
                     <br>
                     <strong class="h4">9,123</strong>
                   </div>
-                </div><!--/.col-->
+                </div>
+                <!--/.col-->
                 <div class="col-sm-6">
                   <div class="callout callout-danger">
                     <small class="text-muted">Recuring Clients</small>
                     <br>
                     <strong class="h4">22,643</strong>
                   </div>
-                </div><!--/.col-->
-              </div><!--/.row-->
+                </div>
+                <!--/.col-->
+              </div>
+              <!--/.row-->
               <hr class="mt-0">
               <div class="progress-group mb-4">
                 <div class="progress-group-prepend">
@@ -407,7 +409,8 @@
                   </div>
                 </div>
               </div>
-            </div><!--/.col-->
+            </div>
+            <!--/.col-->
             <div class="col-sm-6">
               <div class="row">
                 <div class="col-sm-6">
@@ -416,15 +419,18 @@
                     <br>
                     <strong class="h4">78,623</strong>
                   </div>
-                </div><!--/.col-->
+                </div>
+                <!--/.col-->
                 <div class="col-sm-6">
                   <div class="callout callout-success">
                     <small class="text-muted">Organic</small>
                     <br>
                     <strong class="h4">49,123</strong>
                   </div>
-                </div><!--/.col-->
-              </div><!--/.row-->
+                </div>
+                <!--/.col-->
+              </div>
+              <!--/.row-->
               <hr class="mt-0">
               <div class="progress-group">
                 <div class="progress-group-header">
@@ -502,13 +508,17 @@
                   </div>
                 </div>
               </div>
-            </div><!--/.col-->
-          </div><!--/.row-->
+            </div>
+            <!--/.col-->
+          </div>
+          <!--/.row-->
           <br>
           <table class="table table-responsive-sm table-hover table-outline mb-0">
             <thead class="thead-light">
               <tr>
-                <th class="text-center"><i class="icon-people"></i></th>
+                <th class="text-center">
+                  <i class="icon-people"></i>
+                </th>
                 <th>User</th>
                 <th class="text-center">Country</th>
                 <th>Usage</th>
@@ -744,6 +754,8 @@
           </table>
         </div>
       </div>
-    </div><!--/.col-->
-  </div><!--/.row-->
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
 </div>

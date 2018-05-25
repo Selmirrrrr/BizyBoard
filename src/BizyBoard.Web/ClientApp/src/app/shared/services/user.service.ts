@@ -1,6 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
-import { Http , Response, Headers, RequestOptions } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { Response, Headers, RequestOptions } from '@angular/http';
+import { HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+
 
 import { UserRegistration } from '../models/user.registration.interface';
 
@@ -27,7 +29,7 @@ export class UserService extends BaseService {
 
   private loggedIn = false;
 
-  constructor(private http: Http, @Inject('BASE_URL') baseUrl: string, public jwtHelper: JwtHelperService) {
+  constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string, public jwtHelper: JwtHelperService) {
     super();
     this.loggedIn = this.isAuthenticated();
     // ?? not sure if this the best way to broadcast the status but seems to resolve issue on page refresh where auth status is lost in
@@ -51,11 +53,8 @@ export class UserService extends BaseService {
       company: string,
       dossier: number,
       year: number): Observable<UserRegistration> {
-    const body = JSON.stringify({ email, password, firstName, lastName, winBizUsername, winBizPassword, company, dossier, year });
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
-
-    return this.http.post(this.baseUrl + 'api/auth/register', body, options).pipe(
+    return this.http.post(this.baseUrl + 'api/auth/register', {
+      email, password, firstName, lastName, winBizUsername, winBizPassword, company, dossier, year }).pipe(
       map(res => true), catchError(this.handleError)).source;
   }
 
@@ -64,11 +63,11 @@ export class UserService extends BaseService {
     headers.append('Content-Type', 'application/json');
 
     return this.http
-      .post(
+      .post<any>(
         this.baseUrl + 'api/auth/login',
-        JSON.stringify({ email, password }), { headers }
+        { email, password },
       )
-      .pipe(map(res => res.json()),
+      .pipe(map(res => res),
       map(res => {
         localStorage.setItem('auth_token', res.auth_token);
         this.loggedIn = true;
@@ -76,6 +75,22 @@ export class UserService extends BaseService {
         return true;
       }),
       catchError(this.handleError)).source;
+  }
+
+  resetPassword(email: string) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http
+      .post(this.baseUrl + 'api/auth/forgotpassword', JSON.stringify({email}))
+      .pipe(map(res => true), catchError(this.handleError)).source;
+  }
+
+  updatePassword(email: string, newPassword: string, passwordConfirmation: string, token: string) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http
+      .post(this.baseUrl + 'api/auth/updatepassword', JSON.stringify({email, newPassword, passwordConfirmation, token}))
+      .pipe(map(res => true), catchError(this.handleError)).source;
   }
 
   logout() {

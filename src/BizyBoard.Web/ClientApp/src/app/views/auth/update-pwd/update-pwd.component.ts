@@ -1,24 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { OnInit, OnDestroy, Component } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { UserService } from '../../shared/services/user.service';
+import { UpdatePwdModel } from '../../../shared/models/credentials.interface';
+import { UserService } from '../../../shared/services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserRegistration } from '../../shared/models/user.registration.interface';
-import { Credentials } from '../../shared/models/credentials.interface';
 import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: 'login.component.html'
+  templateUrl: 'update-pwd.component.html'
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class UpdatePwdComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  brandNew: boolean;
+  code: boolean;
   errors: string[] = [];
   isRequesting: boolean;
   submitted = false;
-  credentials: Credentials = { email: '', password: '' };
+  credentials: UpdatePwdModel = { email: '', newPassword: '', passwordConfirmation: '', token: '' };
 
   constructor(private userService: UserService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
@@ -27,7 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     // subscribe to router event
     this.subscription = this.activatedRoute.queryParams.subscribe(
       (param: any) => {
-         this.brandNew = param['brandNew'];
+         this.credentials.token = param['token'];
          this.credentials.email = param['email'];
       });
   }
@@ -37,18 +36,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  login({ value, valid }: { value: Credentials, valid: boolean }) {
+  updatePassword({ value, valid }: { value: UpdatePwdModel, valid: boolean }) {
     this.submitted = true;
     this.isRequesting = true;
     this.errors = [];
     if (valid) {
-      this.userService.login(value.email, value.password)
+      this.userService.updatePassword(value.email, value.newPassword, value.passwordConfirmation, value.token)
         .pipe(finalize(() => this.isRequesting = false))
         .subscribe(
         result => {
           console.log(result);
           if (result) {
-             this.router.navigate(['/dashboard']);
+            this.router.navigate(['/login'], { queryParams: { email: value.email } });
           }
         },
         errors => {
@@ -62,7 +61,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                   }
               }
           } else {
-              this.errors.push('something went wrong!');
+            this.errors.push(errors.text());
           }});
     }
     this.isRequesting = false;

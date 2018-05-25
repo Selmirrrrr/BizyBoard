@@ -7,13 +7,13 @@
     {
         public RegistrationViewModelValidator()
         {
-            RuleFor(vm => vm.Email).NotEmpty().WithMessage("Email cannot be empty");
-            RuleFor(vm => vm.Email).EmailAddress().WithMessage("Email format is incorrect");
-            RuleFor(vm => vm.Password).NotEmpty().WithMessage("Password cannot be empty");
-            RuleFor(vm => vm.Password).MinimumLength(8).WithMessage("Password must be at least 8 chars long");
-            RuleFor(vm => vm.Company).NotEmpty().WithMessage("Company cannot be empty");
-            RuleFor(vm => vm.WinBizPassword).NotEmpty().WithMessage("WinBizPassword cannot be empty");
-            RuleFor(vm => vm.WinBizUsername).NotEmpty().WithMessage("WinBizUsername cannot be empty");
+            RuleFor(vm => vm.Email).NotEmpty().WithMessage("L'email ne peut être vide.");
+            RuleFor(vm => vm.Email).EmailAddress().WithMessage("L'email n'est pas au bon format.");
+            RuleFor(vm => vm.Password).NotEmpty().WithMessage("Le mot de passe ne peut être vide.");
+            RuleFor(vm => vm.Password).MinimumLength(8).WithMessage("Le mot de passe doit contenir au moins 8 caractères.");
+            RuleFor(vm => vm.Company).NotEmpty().WithMessage("L'entreprise ne peut être vide.");
+            RuleFor(vm => vm.WinBizPassword).NotEmpty().WithMessage("Le mot de passe WinBIZ ne peut être vide.");
+            RuleFor(vm => vm.WinBizUsername).NotEmpty().WithMessage("Le not d'utilisateur WinBIZ ne peut être vide.");
         }
     }
 }
