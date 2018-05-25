@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit {
   salesChartMonths = '6';
   radioModel: string = 'Month';
 
-  colors: IChartColor[] = [ChartColors.Green, ChartColors.Random];
+  colors: IChartColor[] = [ChartColors.Green];
   public barChartOptions: any = {
     scales: {
       yAxes: [{
