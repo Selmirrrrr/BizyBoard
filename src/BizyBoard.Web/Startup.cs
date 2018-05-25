@@ -24,6 +24,7 @@ namespace BizyBoard.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Tokens;
     using Models.DbEntities;
     using Models.Validations;
@@ -47,7 +48,7 @@ namespace BizyBoard.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSession();
-            services.AddLogging();
+            services.AddLogging(builder => builder.AddAzureWebAppDiagnostics());
 
             services.AddDbContext<AdminDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING"), b => b.MigrationsAssembly("BizyBoard.Data")));
