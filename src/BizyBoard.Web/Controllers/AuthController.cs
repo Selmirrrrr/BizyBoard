@@ -7,7 +7,6 @@
     using System.Web;
     using Auth;
     using AutoMapper;
-    using Bizy.OuinneBiseSharp.Extensions;
     using Core.Services;
     using Data.Context;
     using Microsoft.AspNetCore.Identity;
@@ -58,7 +57,7 @@
         public async Task<IActionResult> Register([FromBody]RegistrationViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            if (_userManager.Users.Any(u => u.NormalizedEmail == model.Email))
+            if (await _userManager.Users.AnyAsync(u => u.NormalizedEmail == model.Email))
                 return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.DuplicateEmail, ModelState));
 
             var userIdentity = _mapper.Map<AppUser>(model);
@@ -73,7 +72,7 @@
             };
 
             tenant = _dbContext.Tenants.Add(tenant).Entity;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             userIdentity.Tenant = tenant;
 
@@ -95,8 +94,6 @@
 
             _dbContext.Tenants.Update(tenant);
 
-            _dbContext.SaveChanges();
-
             await _dbContext.SaveChangesAsync();
 
             return new OkObjectResult(await Tokens.GenerateJwt(await GetClaimsIdentity(userIdentity.Email, model.Password), _jwtFactory, userIdentity.Email, _jwtOptions));
@@ -114,13 +111,12 @@
 
             return new OkObjectResult(jwt);
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> TestWinBizCredentials([FromBody] RegistrationViewModel credentials)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword.Encrypt(WinBizEncryptionKey));
+            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword);
 
             try
             {
