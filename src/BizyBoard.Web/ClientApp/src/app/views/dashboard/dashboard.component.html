@@ -92,18 +92,26 @@
     <div class="col-sm-12 col-lg-12">
 
       <div class="card">
-        <div class="card-header">
-          Bar Chart
-          <div class="card-header-actions">
-            <a href="http://www.chartjs.org">
-              <small class="text-muted">docs</small>
-            </a>
-          </div>
-        </div>
         <div class="card-body">
-          <div class="chart-wrapper">
-            <canvas *ngIf="docInfoVenteChiffreAffaireLabels.length > 1" baseChart class="chart" [datasets]="docInfoVenteChiffreAffaireValues" [labels]="docInfoVenteChiffreAffaireLabels" [options]="barChartOptions" [legend]="barChartLegend"
-              [chartType]="barChartType"></canvas>
+          <div class="row">
+            <div class="col-sm-5">
+              <h4 class="card-title mb-0">Chiffre d'affaires mensuel</h4>
+            </div>
+            <!--/.col-->
+            <div class="col-sm-7 d-none d-md-block">
+              <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(3)" btnRadio="3">3 mois</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(6)" btnRadio="6">6 mois</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(12)" btnRadio="12">12 mois</label>
+              </div>
+            </div>
+            <!--/.col-->
+          </div>
+          <!--/.row-->
+          <div class="chart-wrapper" style="height:300px;margin-top:40px;">
+            <canvas style="height:300px;margin-top:40px;" *ngIf="docInfoVenteChiffreAffaireLabels.length > 1" baseChart class="chart"
+              [labels]="docInfoVenteChiffreAffaireLabels" [datasets]="docInfoVenteChiffreAffaireValues" [options]="barChartOptions"
+              [legend]="false" [colors]="colors" chartType="bar"></canvas>
           </div>
         </div>
       </div>

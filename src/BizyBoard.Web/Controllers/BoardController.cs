@@ -13,7 +13,6 @@
     using Microsoft.Extensions.Logging;
     using Models.DbEntities;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.EntityFrameworkCore;
 
     [Authorize(Policy = "Admin")]
     [Route("api/[controller]")]
@@ -48,7 +47,7 @@
             {
                 _service = _factory.GetInstance(company, user);
                 var results = Enumerable
-                    .Range(0, 6)
+                    .Range(0, nbMonths)
                     .Select(i => DateTime.Now.AddMonths(i - nbMonths).AddDays(DateTime.Now.Day - 1))
                     .Select(async d => new { Result = await _service.DocInfo(DocInfoMethodsEnum.VenteChiffreAffaire, d.AddDays(30), d), Month = d.ToString("MMM") })
                     .Select(o => new { Label = o.Result.Month, o.Result.Result.Value });

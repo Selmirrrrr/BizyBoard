@@ -3,55 +3,72 @@ import { Router } from '@angular/router';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { LabelValue, DataService } from '../../shared/services/data.service';
+import { IChartColor, ChartColors } from '../../shared/models/colors';
 
 @Component({
   templateUrl: 'dashboard.component.html'
 })
+
 export class DashboardComponent implements OnInit {
 
+
+
   docInfoVenteChiffreAffaire: LabelValue[] = [];
-  docInfoVenteChiffreAffaireValues: any[];
+  docInfoVenteChiffreAffaireValues: any;
   docInfoVenteChiffreAffaireLabels: string[] = [];
-  mainChartMonths = 6;
+  salesChartMonths = '6';
+  radioModel: string = 'Month';
+
+  colors: IChartColor[] = [ChartColors.Green, ChartColors.Random];
+  public barChartOptions: any = {
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          callback: label => new Intl.NumberFormat('fr-CH', {
+            style: 'currency',
+            currency: 'CHF'
+          }).format(label)
+        }
+      }]
+    },
+    tooltips: {
+      enabled: false
+    }
+  };
 
   constructor(private dataService: DataService) {
-    this.getDocInfoVenteChiffreAffaire();
+    this.getDocInfoVenteChiffreAffaire(6);
 
   }
 
-  getDocInfoVenteChiffreAffaire() {
-    this.dataService
-    .getDocInfoVenteChiffreAffaire(this.mainChartMonths)
-    .subscribe(data => {
-      console.log(data);
-      this.docInfoVenteChiffreAffaire = data;
-      console.log(this.docInfoVenteChiffreAffaire);
-      this.docInfoVenteChiffreAffaireLabels = data.map(a => a.label);
-      console.log(this.docInfoVenteChiffreAffaireLabels);
-      this.docInfoVenteChiffreAffaireValues = [{data : data.map(d => d.value), label : 'Test'}];
-      console.log(this.docInfoVenteChiffreAffaireValues);
-    },
-    error => () => {
-        // this._toasterService.pop('error', 'Damn', 'Something went wrong...');
-    },
-    () => {
-        // this._toasterService.pop('success', 'Complete', 'Getting all values complete');
-        // this._slimLoadingBarService.complete();
-    });
+  getDocInfoVenteChiffreAffaire(months: number) {
+        this.docInfoVenteChiffreAffaireLabels = [];
+        this.dataService
+      .getDocInfoVenteChiffreAffaire(months)
+      .subscribe(data => {
+        this.docInfoVenteChiffreAffaireLabels = data.map(a => a.label);
+        console.log(this.docInfoVenteChiffreAffaireLabels);
+        this.docInfoVenteChiffreAffaireValues = [{ data: data.map(d => d.value), label: 'Mois' }];
+        console.log(this.docInfoVenteChiffreAffaireValues);
+      },
+        error => () => {
+          // this._toasterService.pop('error', 'Damn', 'Something went wrong...');
+        },
+        () => {
+          // this._toasterService.pop('success', 'Complete', 'Getting all values complete');
+          // this._slimLoadingBarService.complete();
+        });
   }
   // ____________________________________________________//
-// barChart
-public barChartOptions: any = {
-  scaleShowVerticalLines: false,
-  responsive: true
-};
-public barChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-public barChartType = 'bar';
-public barChartLegend = true;
+  // barChart
+  public barChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  public barChartType = 'bar';
+  public barChartLegend = true;
 
-public barChartData: any[] = [
-  {data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'},
-];
+  public barChartData: any[] = [
+    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
+  ];
 
   // lineChart1
   public lineChart1Data: Array<any> = [
@@ -285,8 +302,8 @@ public barChartData: any[] = [
       mode: 'index',
       position: 'nearest',
       callbacks: {
-        labelColor: function(tooltipItem, chart) {
-          return { backgroundColor: chart.data.datasets[tooltipItem.datasetIndex].borderColor }
+        labelColor: function (tooltipItem, chart) {
+          return { backgroundColor: chart.data.datasets[tooltipItem.datasetIndex].borderColor };
         }
       }
     },
@@ -298,7 +315,7 @@ public barChartData: any[] = [
           drawOnChartArea: false,
         },
         ticks: {
-          callback: function(value: any) {
+          callback: function (value: any) {
             return value.charAt(0);
           }
         }
@@ -430,5 +447,4 @@ public barChartData: any[] = [
     }
   }
 
-  radioModel: string = 'Month';
 }
