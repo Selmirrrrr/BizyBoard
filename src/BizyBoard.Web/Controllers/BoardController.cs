@@ -14,7 +14,6 @@
     using Models.DbEntities;
     using Microsoft.AspNetCore.Authorization;
 
-    [Authorize]
     [Route("api/[controller]")]
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
