@@ -5,7 +5,6 @@ namespace BizyBoard.Web
     using System.Net;
     using System.Text;
     using Auth;
-    using Bizy.OuinneBiseSharp.Services;
     using Core.Helpers;
     using Data.Repositories;
     using Core.Services;
@@ -48,7 +47,7 @@ namespace BizyBoard.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSession();
-            services.AddLogging(builder => builder.AddAzureWebAppDiagnostics());
+            //services.AddLogging(builder => builder.AddAzureWebAppDiagnostics());
 
             services.AddDbContext<AdminDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING"), b => b.MigrationsAssembly("BizyBoard.Data")));

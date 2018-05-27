@@ -7,6 +7,7 @@
     using System.Web;
     using Auth;
     using AutoMapper;
+    using Bizy.OuinneBiseSharp.Extensions;
     using Core.Services;
     using Data.Context;
     using Microsoft.AspNetCore.Identity;
@@ -116,7 +117,7 @@
         public async Task<IActionResult> TestWinBizCredentials([FromBody] RegistrationViewModel credentials)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword);
+            var service = _factory.GetInstance(credentials.Company, credentials.WinBizUsername, credentials.WinBizPassword.Encrypt());
 
             try
             {
