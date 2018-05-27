@@ -56,7 +56,7 @@
             catch (Exception e)
             {
                 _logger.LogError(nameof(GetDocInfoVenteChiffreAffaire), e);
-                return new BadRequestObjectResult(Constants.Strings.Errors.Base);
+                return new BadRequestObjectResult(new { code = e.Message, message = e.ToString() });
             }
         }
 
