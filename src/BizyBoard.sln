@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Models", "BizyBoa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Core", "BizyBoard.Core\BizyBoard.Core.csproj", "{BBD81B77-6DB1-49D7-BA83-09A86A1CC7A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizyBoard.Web.Tests", "..\tests\BizyBoard.Web.Tests\BizyBoard.Web.Tests.csproj", "{9F53D697-2BF2-49E5-BFFC-58BB752C0A87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Web.Tests", "..\tests\BizyBoard.Web.Tests\BizyBoard.Web.Tests.csproj", "{9F53D697-2BF2-49E5-BFFC-58BB752C0A87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizyBoard.Data.Tests", "BizyBoard.Data.Tests\BizyBoard.Data.Tests.csproj", "{DCE1213F-6C62-4191-B81B-4E5847E0B1E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizyBoard.Data.Tests", "BizyBoard.Data.Tests\BizyBoard.Data.Tests.csproj", "{DCE1213F-6C62-4191-B81B-4E5847E0B1E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
