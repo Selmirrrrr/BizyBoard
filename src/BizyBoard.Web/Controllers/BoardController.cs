@@ -7,13 +7,16 @@
     using Bizy.OuinneBiseSharp.Enums;
     using Bizy.OuinneBiseSharp.Services;
     using Core.Helpers;
+    using Core.Permissions;
     using Data.Context;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Models.DbEntities;
     using Microsoft.AspNetCore.Authorization;
 
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = Policies.CanSeeDashboard)]
     [Authorize]
     [Route("api/[controller]")]
     [Produces("application/json")]
