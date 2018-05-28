@@ -6,8 +6,8 @@ namespace BizyBoard.Web
     using System.Text;
     using Auth;
     using Core.Helpers;
+    using Core.Permissions;
     using Data.Repositories;
-    using Core.Services;
     using Data.Context;
     using Extensions;
     using FluentValidation.AspNetCore;
@@ -104,13 +104,10 @@ namespace BizyBoard.Web
                 configureOptions.SaveToken = true;
             });
 
-            var rolesService = new RolesService();
             // api user claim policy
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(rolesService.Admin, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Role, rolesService.Admin));
-                options.AddPolicy(rolesService.TenantAdmin, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Role, rolesService.TenantAdmin));
-                options.AddPolicy(rolesService.TenantUser, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Role, rolesService.TenantUser));
+                options.AddPolicy(Policies.CanSeeDashboard, policy => { policy.RequireClaim(CustomClaimTypes.Permission, Policies.CanSeeDashboard); });
             });
 
             services.Configure<IdentityOptions>(options =>
@@ -143,7 +140,6 @@ namespace BizyBoard.Web
 
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
-            services.AddTransient<RolesService>();
             services.AddTransient<IOuinneBiseSharpFactory, OuinneBiseSharpFactory>();
         }
 

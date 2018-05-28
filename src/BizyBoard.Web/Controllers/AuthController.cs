@@ -8,7 +8,7 @@
     using Auth;
     using AutoMapper;
     using Bizy.OuinneBiseSharp.Extensions;
-    using Core.Services;
+    using Core.Permissions;
     using Data.Context;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -27,7 +27,6 @@
         private readonly AdminDbContext _dbContext;
         private readonly IJwtFactory _jwtFactory;
         private readonly ILogger<AuthController> _logger;
-        private readonly RolesService _rolesService;
         private readonly IOuinneBiseSharpFactory _factory;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
@@ -37,7 +36,6 @@
                                  AdminDbContext dbContext,
                                  IJwtFactory jwtFactory,
                                  IOptions<JwtIssuerOptions> jwtOptions,
-                                 RolesService rolesService,
                                  IOuinneBiseSharpFactory factory,
                                  IEmailService emailService,
                                  IMapper mapper,
@@ -47,7 +45,6 @@
             _logger = logger;
             _dbContext = dbContext;
             _jwtFactory = jwtFactory;
-            _rolesService = rolesService;
             _factory = factory;
             _emailService = emailService;
             _mapper = mapper;
@@ -88,7 +85,7 @@
 
             var user = await _userManager.FindByEmailAsync(userIdentity.Email);
 
-            await _userManager.AddToRoleAsync(user, _rolesService.TenantAdmin);
+            await _userManager.AddToRoleAsync(user, Roles.TenantAdmin);
 
             tenant.CreatedBy = user;
             tenant.LastUpdateBy = user;

@@ -3,8 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Claims;
     using System.Threading.Tasks;
-    using Core.Services;
+    using Bizy.OuinneBiseSharp.Extensions;
+    using Core.Permissions;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
@@ -16,21 +18,18 @@
         private readonly AdminDbContext _adminDbContext;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
-        private readonly RolesService _rolesService;
         private readonly ILogger<AppDbContextSeeder> _logger;
 
         public AppDbContextSeeder(AppDbContext context,
             AdminDbContext adminDbContext,
             UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager,
-            RolesService rolesService,
             ILogger<AppDbContextSeeder> logger)
         {
             _context = context;
             _adminDbContext = adminDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
-            _rolesService = rolesService;
             _logger = logger;
         }
 
@@ -40,17 +39,22 @@
         {
             if (_context.Roles.Any()) return;
 
-            var rolesToAdd = new List<AppRole>(){
-                new AppRole { Name = _rolesService.Admin, Description = "Full rights role" },
-                new AppRole { Name = _rolesService.TenantAdmin, Description = "Tenant admin role"},
-                new AppRole { Name = _rolesService.TenantUser, Description = "Tenant user role"}
+            var rolesToAdd = new List<(AppRole role, string permission)> {
+                (new AppRole { Name = Roles.Admin, Description = "Full rights role" }, Policies.CanSeeDashboard),
+                (new AppRole { Name = Roles.TenantAdmin, Description = "Tenant admin role"}, Policies.CanSeeDashboard),
+                (new AppRole { Name = Roles.TenantUser, Description = "Tenant user role"}, Policies.CanSeeDashboard)
             };
 
-            foreach (var appRole in rolesToAdd) await _roleManager.CreateAsync(appRole);
+            foreach (var (role, permission) in rolesToAdd)
+            {
+                await _roleManager.CreateAsync(role);
+                var userRole = await _roleManager.FindByNameAsync(role.Name);
+                await _roleManager.AddClaimAsync(userRole, new Claim(CustomClaimTypes.Permission, permission));
+            }
 
             var tenant = new Tenant
             {
-                Name = "Bizy",
+                Name = "BizyDev",
                 CreatedByFullName = "Selmir Hajruli",
                 LastUpdateByFullName = "Selmir Hajruli",
                 CreationDate = DateTime.Now,
@@ -67,13 +71,19 @@
                 Firstname = "Selmir",
                 Lastname = "Hajruli",
                 Email = "info@bizy.ch",
+                LastErpFiscalYear = 2018,
+                LastErpCompanyId = 2,
+                ErpUsername = Environment.GetEnvironmentVariable("WINBIZ_API_USERNAME"),
+                ErpPassword = Environment.GetEnvironmentVariable("WINBIZ_API_PASSWORD").Encrypt(
+                    "BgIAAACkAABSU0ExAAQAAAEAAQBZ3myd6ZQA0tUXZ3gIzu1sQ7larRfM5KFiYbkgWk+jw2VEWpxpNNfDw8M3MIIbbDeUG02y/ZW+XFqyMA/87kiGt9eqd9Q2q3rRgl3nWoVfDnRAPR4oENfdXiq5oLW3VmSKtcBl2KzBCi/J6bbaKmtoLlnvYMfDWzkE3O1mZrouzA=="),
                 EmailConfirmed = true,
+                
                 Tenant = tenant
             }, Environment.GetEnvironmentVariable("USER_PASSWORD"));
 
             var user = await _userManager.FindByNameAsync("info@bizy.ch");
 
-            await _userManager.AddToRoleAsync(user, _rolesService.Admin);
+            await _userManager.AddToRoleAsync(user, Roles.Admin);
 
             tenant.CreatedBy = user;
             tenant.LastUpdateBy = user;
