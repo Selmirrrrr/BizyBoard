@@ -14,6 +14,7 @@
     using Models.DbEntities;
     using Microsoft.AspNetCore.Authorization;
 
+    [Authorize]
     [Route("api/[controller]")]
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
@@ -60,15 +61,10 @@
             }
         }
 
-        private async Task<AppUser> GetUser()
-        {
-            int.TryParse(User.Claims.FirstOrDefault(c => string.Equals(c.Type, Constants.Strings.JwtClaimIdentifiers.Id, StringComparison.InvariantCultureIgnoreCase))?.Value, out var userId);
-            return await _userManager.FindByIdAsync(userId.ToString());
-        }
+        private async Task<AppUser> GetUser() 
+            => await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(c => string.Equals(c.Type, Constants.Strings.JwtClaimIdentifiers.Id, StringComparison.InvariantCultureIgnoreCase))?.Value);
 
-        private string GetCompany()
-        {
-            return User.Claims.FirstOrDefault(c => string.Equals(c.Type, Constants.Strings.JwtClaimIdentifiers.Company, StringComparison.InvariantCultureIgnoreCase))?.Value;
-        }
+        private string GetCompany() 
+            => User.Claims.FirstOrDefault(c => string.Equals(c.Type, Constants.Strings.JwtClaimIdentifiers.Company, StringComparison.InvariantCultureIgnoreCase))?.Value;
     }
 }

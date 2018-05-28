@@ -32,11 +32,13 @@ namespace BizyBoard.Web
 
     public class Startup
     {
+        private readonly IHostingEnvironment _currentEnvironment;
         private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY")));
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            _currentEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -45,15 +47,14 @@ namespace BizyBoard.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             services.AddSession();
-            //services.AddLogging(builder => builder.AddAzureWebAppDiagnostics());
+
+            services.AddLogging();
+            if (_currentEnvironment.IsProduction()) services.AddLogging(builder => builder.AddAzureWebAppDiagnostics());
 
             services.AddDbContext<AdminDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING"), b => b.MigrationsAssembly("BizyBoard.Data")));
-
-
-
+            
             services.AddTransient<AppDbContextSeeder>();
 
             // In production, the Angular files will be served from this directory
@@ -182,7 +183,7 @@ namespace BizyBoard.Web
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TimeCHeet API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BizyBoard API V1");
             });
 
             app.UseMvc(routes =>
