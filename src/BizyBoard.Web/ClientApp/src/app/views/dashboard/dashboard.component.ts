@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit {
   docInfoVenteChiffreAffaireValues: any;
   docInfoVenteChiffreAffaireLabels: string[] = [];
   salesChartMonths = '6';
-  radioModel: string = 'Month';
+  radioModel = 'Month';
 
   colors: IChartColor[] = [ChartColors.Green];
   public barChartOptions: any = {

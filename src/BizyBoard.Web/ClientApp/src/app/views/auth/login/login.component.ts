@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../../shared/services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,12 +13,27 @@ import { finalize } from 'rxjs/operators';
 export class LoginComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
-
   brandNew: boolean;
   errors: string[] = [];
-  isRequesting: boolean;
+  public isRequesting: boolean;
   submitted = false;
   credentials: Credentials = { email: '', password: '' };
+
+  options = {
+    ease: 'linear',
+    speed: 200,
+    trickleSpeed: 300,
+    meteor: true,
+    spinner: true,
+    spinnerPosition: 'right',
+    direction: 'leftToRightIncreased',
+    color: 'red',
+    thick: true
+  };
+
+  startedClass = false;
+  completedClass = false;
+  preventAbuse = false;
 
   constructor(private userService: UserService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
@@ -43,16 +58,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.errors = [];
     if (valid) {
       this.userService.login(value.email, value.password)
-        .pipe(finalize(() => this.isRequesting = false))
         .subscribe(
         result => {
-          console.log(result);
+          this.isRequesting = false;
           if (result) {
              this.router.navigate(['/dashboard']);
           }
         },
         errors => {
-          // this.successfulSave = false;
+          this.isRequesting = false;
           if (errors.status === 400) {
               // handle validation error
               const validationErrorDictionary = errors.error;
@@ -65,7 +79,6 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.errors.push(errors.text());
           }});
     }
-    this.isRequesting = false;
   }
 }
 
