@@ -93,7 +93,7 @@ export class RegisterComponent implements OnInit {
                 }
               }
             } else {
-              this.errors.push(errors.error;
+              this.errors.push(errors.error);
             }
           });
     }

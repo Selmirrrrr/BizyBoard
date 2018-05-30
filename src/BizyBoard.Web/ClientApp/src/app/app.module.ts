@@ -1,3 +1,4 @@
+import { IndexComponent } from './views/index.component';
 import { UpdatePwdComponent } from './views/auth/update-pwd/update-pwd.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -65,7 +66,8 @@ export function tokenGetter() {
     LoginComponent,
     RegisterComponent,
     ResetPwdComponent,
-    UpdatePwdComponent
+    UpdatePwdComponent,
+    IndexComponent
   ],
   imports: [
     HttpClientModule,
