@@ -27,6 +27,8 @@ export class RegisterComponent implements OnInit {
     this.submitted = true;
     this.isRequesting = true;
     this.errors = [];
+    console.log(this.selectedDossier.number)
+    console.log(this.selectedDossier.exercice)
     if (valid) {
       this.userService.register(value.email,
         value.password,
@@ -47,14 +49,14 @@ export class RegisterComponent implements OnInit {
             // this.successfulSave = false;
             if (errors.status === 400) {
               // handle validation error
-              const validationErrorDictionary = JSON.parse(errors.text());
+              const validationErrorDictionary = errors.error;
               for (const fieldName in validationErrorDictionary) {
                 if (validationErrorDictionary.hasOwnProperty(fieldName)) {
                   this.errors.push(validationErrorDictionary[fieldName]);
                 }
               }
             } else {
-              this.errors.push(errors.text());
+              this.errors.push(errors.error);
             }
           });
     }
@@ -84,14 +86,14 @@ export class RegisterComponent implements OnInit {
             // this.successfulSave = false;
             if (errors.status === 400) {
               // handle validation error
-              const validationErrorDictionary = JSON.parse(errors.text());
+              const validationErrorDictionary = errors.error;
               for (const fieldName in validationErrorDictionary) {
                 if (validationErrorDictionary.hasOwnProperty(fieldName)) {
                   this.errors.push(validationErrorDictionary[fieldName]);
                 }
               }
             } else {
-              this.errors.push(errors.text());
+              this.errors.push(errors.error;
             }
           });
     }

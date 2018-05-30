@@ -72,22 +72,23 @@
                 </alert>
                 <button type="submit" *ngIf="dossiers.length < 1" class="btn btn-block btn-success">Connexion à WinBIZ Cloud</button>
               </div>
-            </form>
-            <div *ngIf="dossiers.length > 1" class="card-footer p-4">
-              <div class="row">
-                <div class="col-7">
-                  <div class="form-group row">
-                    <label class="col-md-4 col-form-label">Dossier</label>
-                    <div class="col-md-8">
-                      <select [(ngModel)]="selectedDossier" class="form-control">
-                        <option *ngFor="let d of dossiers" value="d.Number" label="{{d.name}}"></option>
-                      </select>
+              <div *ngIf="dossiers.length > 1" class="card-footer p-4">
+                <div class="row">
+                  <div class="col-7">
+                    <div class="form-group row">
+                      <label class="col-md-4 col-form-label">Dossier</label>
+                      <div class="col-md-8">
+                        <select [(ngModel)]="selectedDossier" class="form-control" name="selectedDossier">
+                          <!-- <option *ngFor="let d of dossiers"  value="{ &quot;year&quot;:{{d.exercice}}, &quot;dossier&quot;:{{d.number}} }" label="{{d.name}}"></option> -->
+                          <option *ngFor="let d of dossiers" [ngValue]="d" label="{{d.name}}"></option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <button type="submit" class="btn btn-block btn-success">Créer le compte</button>
               </div>
-              <button type="submit" class="btn btn-block btn-success">Créer le compte</button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
