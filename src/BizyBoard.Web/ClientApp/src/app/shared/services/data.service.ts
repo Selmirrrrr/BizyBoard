@@ -41,8 +41,12 @@ export class DataService extends BaseService {
       map(res => res, catchError(this.handleError)));
   }
 
-  public getDocInfoVenteChiffreAffaire(nbMonths: number): Observable<LabelValue[]> {
-    return this.http.get<LabelValue[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaire/' + nbMonths);
+  public getDocInfoVenteChiffreAffaireYears(nbYears: number): Observable<LabelValue[]> {
+    return this.http.get<LabelValue[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaireYears/' + nbYears);
+  }
+
+  public getDocInfoVenteChiffreAffaireMonths(nbMonths: number): Observable<LabelValue[]> {
+    return this.http.get<LabelValue[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaireMonths/' + nbMonths);
   }
 }
 

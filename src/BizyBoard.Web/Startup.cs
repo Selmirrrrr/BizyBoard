@@ -107,7 +107,7 @@ namespace BizyBoard.Web
             // api user claim policy
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(Policies.CanSeeDashboard, policy => { policy.RequireClaim(CustomClaimTypes.Permission, Policies.CanSeeDashboard); });
+                options.AddPolicy(Policies.CanSeeDashboard, policy => policy.RequireClaim(CustomClaimTypes.Permission, Policies.CanSeeDashboard));
             });
 
             services.Configure<IdentityOptions>(options =>

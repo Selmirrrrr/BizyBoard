@@ -18,14 +18,5 @@ export interface Email {
 export interface Dossier {
     number: number;
     name: string;
-    exercices: Exercice[];
-}
-
-export interface Exercice {
-    year: number;
-    start: Date;
-    end: Date;
-    description: string;
-    isClosed: boolean;
-    dossier: number;
+    exercice: number;
 }
