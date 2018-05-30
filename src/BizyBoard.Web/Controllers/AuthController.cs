@@ -122,7 +122,7 @@
                 if (folders.ErrorsCount > 0) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState("winbiz_error", folders.UserErrorMsg, ModelState));
                 if (folders.Value.Count < 1) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Errors.NoWinBizFolder, ModelState));
 
-                return new OkObjectResult(folders.Value.Select(d => new { d.Number, d.Name, Exercices = d.Exercices.Select(e => new { e.Year, e.Start, e.End, e.Description, e.IsClosed, Dossier = d.Number }) }).ToList());
+                return new OkObjectResult(folders.Value.Select(d => new { d.Number, d.Name, Exercice = d.Exercices.OrderBy(e => e.Year).LastOrDefault()?.Year ?? 2018 }).ToList());
             }
             catch (Exception e)
             {

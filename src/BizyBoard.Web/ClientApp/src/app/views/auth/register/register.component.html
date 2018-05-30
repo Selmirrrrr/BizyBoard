@@ -65,6 +65,7 @@
                   </div>
                   <input type="password" class="form-control" id="winBizPassword" name="winBizPassword" placeholder="Mot de passe WinBIZ Cloud"
                     ngModel>
+                  <span class="help-block small">Indispensable pour le bon fonctionnement du programme. <br /> Sera enregistré dans la base de données de BizyBoard de manière chiffrée et confidentielle.</span>
                 </div>
                 <alert [dismissible]="true" *ngFor="let error of errors" type="warning">
                   {{ error }}
@@ -78,10 +79,8 @@
                   <div class="form-group row">
                     <label class="col-md-4 col-form-label">Dossier</label>
                     <div class="col-md-8">
-                      <select [(ngModel)]="selectedExercice" class="form-control">
-                        <optgroup *ngFor="let d of dossiers" value="d" label="{{d.name}}">
-                          <option *ngFor="let e of d.exercices" value="{ &quot;year&quot;:{{e.year}}, &quot;dossier&quot;:{{e.dossier}} }">{{e.year}}</option>
-                        </optgroup>
+                      <select [(ngModel)]="selectedDossier" class="form-control">
+                        <option *ngFor="let d of dossiers" value="d.Number" label="{{d.name}}"></option>
                       </select>
                     </div>
                   </div>

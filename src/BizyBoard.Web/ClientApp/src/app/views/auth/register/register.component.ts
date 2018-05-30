@@ -1,4 +1,4 @@
-import { Dossier, Exercice } from './../../../shared/models/credentials.interface';
+import { Dossier } from './../../../shared/models/credentials.interface';
 import { Component, OnInit, Output } from '@angular/core';
 import { UserService } from '../../../shared/services/user.service';
 import { DataService } from './../../../shared/services/data.service';
@@ -16,7 +16,6 @@ export class RegisterComponent implements OnInit {
   isRequesting: boolean;
   submitted = false;
   selectedDossier: Dossier;
-  selectedExercice: string;
 
   constructor(private userService: UserService, private dataService: DataService, private router: Router) { }
 
@@ -35,7 +34,7 @@ export class RegisterComponent implements OnInit {
         value.lastName,
         value.winBizUsername,
         value.winBizPassword,
-        value.company, JSON.parse(this.selectedExercice).dossier, JSON.parse(this.selectedExercice).year).pipe(
+        value.company, this.selectedDossier.number, this.selectedDossier.exercice).pipe(
           finalize(() => this.isRequesting = false)
         )
         .subscribe(

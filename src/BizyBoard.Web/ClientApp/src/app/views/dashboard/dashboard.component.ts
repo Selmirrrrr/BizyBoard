@@ -10,14 +10,15 @@ import { IChartColor, ChartColors } from '../../shared/models/colors';
 })
 
 export class DashboardComponent implements OnInit {
-
-
-
-  docInfoVenteChiffreAffaire: LabelValue[] = [];
-  docInfoVenteChiffreAffaireValues: any;
-  docInfoVenteChiffreAffaireLabels: string[] = [];
+  docInfoVenteChiffreAffaireMonths: LabelValue[] = [];
+  docInfoVenteChiffreAffaireValuesMonths: any;
+  docInfoVenteChiffreAffaireLabelsMonths: string[] = [];
   salesChartMonths = '6';
-  radioModel = 'Month';
+
+  docInfoVenteChiffreAffaireYears: LabelValue[] = [];
+  docInfoVenteChiffreAffaireValuesYears: any;
+  docInfoVenteChiffreAffaireLabelsYears: string[] = [];
+  salesChartYears = '3';
 
   colors: IChartColor[] = [ChartColors.Green];
   public barChartOptions: any = {
@@ -33,33 +34,46 @@ export class DashboardComponent implements OnInit {
       }]
     },
     tooltips: {
-      enabled: false
+      enabled: true
     }
   };
 
   constructor(private dataService: DataService) {
-    this.getDocInfoVenteChiffreAffaire(6);
-
+    this.getDocInfoVenteChiffreAffaireMonths(6);
+    this.getDocInfoVenteChiffreAffaireYears(3);
   }
 
-  getDocInfoVenteChiffreAffaire(months: number) {
-        this.docInfoVenteChiffreAffaireLabels = [];
+  getDocInfoVenteChiffreAffaireYears(months: number) {
+        this.docInfoVenteChiffreAffaireLabelsMonths = [];
         this.dataService
-      .getDocInfoVenteChiffreAffaire(months)
+      .getDocInfoVenteChiffreAffaireYears(months)
       .subscribe(data => {
-        this.docInfoVenteChiffreAffaireLabels = data.map(a => a.label);
-        console.log(this.docInfoVenteChiffreAffaireLabels);
-        this.docInfoVenteChiffreAffaireValues = [{ data: data.map(d => d.value), label: 'Mois' }];
-        console.log(this.docInfoVenteChiffreAffaireValues);
+        this.docInfoVenteChiffreAffaireLabelsMonths = data.map(a => a.label);
+        console.log(this.docInfoVenteChiffreAffaireLabelsMonths);
+        this.docInfoVenteChiffreAffaireValuesMonths = [{ data: data.map(d => d.value), label: 'Mois' }];
+        console.log(this.docInfoVenteChiffreAffaireValuesMonths);
       },
         error => () => {
-          // this._toasterService.pop('error', 'Damn', 'Something went wrong...');
         },
         () => {
-          // this._toasterService.pop('success', 'Complete', 'Getting all values complete');
-          // this._slimLoadingBarService.complete();
         });
   }
+
+  getDocInfoVenteChiffreAffaireMonths(years: number) {
+    this.docInfoVenteChiffreAffaireLabelsYears = [];
+    this.dataService
+  .getDocInfoVenteChiffreAffaireYears(years)
+  .subscribe(data => {
+    this.docInfoVenteChiffreAffaireLabelsYears = data.map(a => a.label);
+    console.log(this.docInfoVenteChiffreAffaireLabelsYears);
+    this.docInfoVenteChiffreAffaireValuesYears = [{ data: data.map(d => d.value), label: 'Année' }];
+    console.log(this.docInfoVenteChiffreAffaireValuesYears);
+  },
+    error => () => {
+    },
+    () => {
+    });
+}
   // ____________________________________________________//
   // barChart
   public barChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];

@@ -7,18 +7,16 @@
     using Bizy.OuinneBiseSharp.Enums;
     using Bizy.OuinneBiseSharp.Services;
     using Core.Helpers;
-    using Core.Permissions;
     using Data.Context;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Models.DbEntities;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
 
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = Policies.CanSeeDashboard)]
     [Authorize]
-    [Route("api/[controller]")]
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     public class BoardController : Controller
@@ -38,8 +36,30 @@
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetDocInfoVenteChiffreAffaireThisYear()
+        {
+            var user = await GetUser();
+            if (user == null) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.UserNotFound, ModelState));
+            var company = GetCompany();
+            if (string.IsNullOrWhiteSpace(company)) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.CompanyNotFound, ModelState));
+
+            try
+            {
+                _service = _factory.GetInstance(company, user);
+                var result = await _service.DocInfo(DocInfoMethodsEnum.VenteChiffreAffaire, new DateTime(DateTime.Now.Year, 12, 31), new DateTime(DateTime.Now.Year, 1, 1));
+
+                return Ok(result.Value);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(nameof(GetDocInfoVenteChiffreAffaireMonths), e);
+                return new BadRequestObjectResult(Constants.Strings.Errors.Base);
+            }
+        }
+
+        [HttpGet]
         [Route("{nbMonths}")]
-        public async Task<IActionResult> GetDocInfoVenteChiffreAffaire(int nbMonths)
+        public async Task<IActionResult> GetDocInfoVenteChiffreAffaireMonths([BindRequired, FromRoute] int nbMonths)
         {
             var user = await GetUser();
             if (user == null) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.UserNotFound, ModelState));
@@ -57,12 +77,64 @@
 
                 _logger.LogInformation("Results", results);
                 return Ok(results);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(nameof(GetDocInfoVenteChiffreAffaireMonths), e);
+                return new BadRequestObjectResult(Constants.Strings.Errors.Base);
+            }
+        }
+
+        [HttpGet]
+        [Route("{nbYears}")]
+        public async Task<IActionResult> GetDocInfoVenteChiffreAffaireYears([BindRequired, FromRoute] int nbYears)
+        {
+            var user = await GetUser();
+            if (user == null) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.UserNotFound, ModelState));
+            var company = GetCompany();
+            if (string.IsNullOrWhiteSpace(company)) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.CompanyNotFound, ModelState));
+
+            try
+            {
+                _service = _factory.GetInstance(company, user);
+                var results = Enumerable
+                    .Range(0, nbYears)
+                    .Select(i => new DateTime(DateTime.Now.AddYears(i - nbYears).Year, 1, 1))
+                    .Select(async d => new { Result = await _service.DocInfo(DocInfoMethodsEnum.VenteChiffreAffaire, d.AddMonths(12).AddDays(30), d), d.Year })
+                    .Select(o => new { Label = o.Result.Year, o.Result.Result.Value }).ToList();
+
+                _logger.LogInformation("Results", results);
+                return Ok(results);
 
             }
             catch (Exception e)
             {
-                _logger.LogError(nameof(GetDocInfoVenteChiffreAffaire), e);
-                return new BadRequestObjectResult(new { code = e.Message, message = e.ToString() });
+                _logger.LogError(nameof(GetDocInfoVenteChiffreAffaireMonths), e);
+                return new BadRequestObjectResult(Constants.Strings.Errors.Base);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFolders()
+        {
+            var user = await GetUser();
+            if (user == null) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.UserNotFound, ModelState));
+            var company = GetCompany();
+            if (string.IsNullOrWhiteSpace(company)) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.CompanyNotFound, ModelState));
+
+            try
+            {
+                _service = _factory.GetInstance(company, user);
+                var folders = await _service.Folders();
+                if (folders.ErrorsCount > 0) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState("winbiz_error", folders.UserErrorMsg, ModelState));
+                if (folders.Value.Count < 1) return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.NoWinBizFolder, ModelState));
+
+                return new OkObjectResult(folders.Value.Select(d => new { d.Number, d.Name, Exercice = d.Exercices.OrderBy(e => e.Year).LastOrDefault()?.Year ?? 2018 }).ToList());
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, nameof(GetFolders));
+                return new BadRequestObjectResult(ErrorsHelper.AddErrorToModelState(Constants.Strings.Errors.Base, ModelState));
             }
         }
 
