@@ -1,5 +1,6 @@
+import { IndexComponent } from './views/index.component';
 import { UpdatePwdComponent } from './views/auth/update-pwd/update-pwd.component';
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // Import Containers
@@ -15,7 +16,7 @@ import { ResetPwdComponent } from './views/auth/reset-pwd/reset-pwd.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '',
+    component: IndexComponent,
     pathMatch: 'full',
   },
   {

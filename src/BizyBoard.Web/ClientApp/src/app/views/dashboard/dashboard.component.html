@@ -1,87 +1,76 @@
 <div class="animated fadeIn">
   <div class="row">
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-primary">
-        <div class="card-body pb-0">
-          <div class="btn-group float-right" dropdown>
-            <button type="button" class="btn btn-transparent dropdown-toggle p-0" dropdownToggle>
-              <i class="icon-settings"></i>
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div>
-          <div class="text-value">9.823</div>
-          <div>Members online</div>
+      <div class="brand-card">
+        <div class="brand-card-header bg-facebook">
+          <span class="text-value text-white">Chiffre d'affaires annuel</span>
         </div>
-        <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
-          <canvas baseChart class="chart" [datasets]="lineChart1Data" [labels]="lineChart1Labels" [options]="lineChart1Options" [colors]="lineChart1Colours"
-            [legend]="lineChart1Legend" [chartType]="lineChart1Type"></canvas>
+        <div class="brand-card-body">
+          <div>
+            <div class="text-value">89k</div>
+            <div class="text-uppercase text-muted small">Instant T</div>
+          </div>
+          <div>
+            <div class="text-value">459</div>
+            <div class="text-uppercase text-muted small">Instant T - 1 année</div>
+          </div>
         </div>
       </div>
     </div>
     <!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-info">
-        <div class="card-body pb-0">
-          <button type="button" class="btn btn-transparent p-0 float-right">
-            <i class="icon-location-pin"></i>
-          </button>
-          <div class="text-value">9.823</div>
-          <div>Members online</div>
+      <div class="brand-card">
+        <div class="brand-card-header bg-google-plus">
+           <span class="text-value text-white">Paiements en retard</span>
+
         </div>
-        <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
-          <canvas baseChart class="chart" [datasets]="lineChart2Data" [labels]="lineChart2Labels" [options]="lineChart2Options" [colors]="lineChart2Colours"
-            [legend]="lineChart2Legend" [chartType]="lineChart2Type"></canvas>
+        <div class="brand-card-body">
+          <div>
+            <div class="text-value">973k</div>
+            <div class="text-uppercase text-muted small">Documents</div>
+          </div>
+          <div>
+            <div class="text-value">1.792</div>
+            <div class="text-uppercase text-muted small">CHF</div>
+          </div>
         </div>
       </div>
     </div>
     <!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-warning">
-        <div class="card-body pb-0">
-          <div class="btn-group float-right" dropdown>
-            <button type="button" class="btn btn-transparent dropdown-toggle p-0" dropdownToggle>
-              <i class="icon-settings"></i>
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div>
-          <div class="text-value">9.823</div>
-          <div>Members online</div>
+      <div class="brand-card">
+        <div class="brand-card-header bg-twitter">
+            <span class="text-value text-white">Paiements à venir</span>
+
         </div>
-        <div class="chart-wrapper mt-3" style="height:70px;">
-          <canvas baseChart class="chart" [datasets]="lineChart3Data" [labels]="lineChart3Labels" [options]="lineChart3Options" [colors]="lineChart3Colours"
-            [legend]="lineChart3Legend" [chartType]="lineChart3Type"></canvas>
+        <div class="brand-card-body">
+          <div>
+            <div class="text-value">500+</div>
+            <div class="text-uppercase text-muted small">documents</div>
+          </div>
+          <div>
+            <div class="text-value">292</div>
+            <div class="text-uppercase text-muted small">CHF</div>
+          </div>
         </div>
       </div>
     </div>
     <!--/.col-->
     <div class="col-sm-6 col-lg-3">
-      <div class="card text-white bg-danger">
-        <div class="card-body pb-0">
-          <div class="btn-group float-right" dropdown>
-            <button type="button" class="btn btn-transparent dropdown-toggle p-0" dropdownToggle>
-              <i class="icon-settings"></i>
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div>
-          <div class="text-value">9.823</div>
-          <div>Members online</div>
+      <div class="brand-card">
+        <div class="brand-card-header bg-xing">
+            <span class="text-value text-white">Chiffre d'affaires mensuel</span>
+
         </div>
-        <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
-          <canvas baseChart class="chart" [datasets]="barChart1Data" [labels]="barChart1Labels" [options]="barChart1Options" [colors]="barChart1Colours"
-            [legend]="barChart1Legend" [chartType]="barChart1Type"></canvas>
+        <div class="brand-card-body">
+          <div>
+            <div class="text-value">894</div>
+            <div class="text-uppercase text-muted small">ce mois</div>
+          </div>
+          <div>
+            <div class="text-value">92</div>
+            <div class="text-uppercase text-muted small">même mois un an avant</div>
+          </div>
         </div>
       </div>
     </div>
@@ -100,17 +89,20 @@
             <!--/.col-->
             <div class="col-sm-7 d-none d-md-block">
               <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
-                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(3)" btnRadio="3">3 mois</label>
-                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(6)" btnRadio="6">6 mois</label>
-                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaire(12)" btnRadio="12">12 mois</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaireMonths(3)"
+                  btnRadio="3">3 mois</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaireMonths(6)"
+                  btnRadio="6">6 mois</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaireMonths(12)"
+                  btnRadio="12">12 mois</label>
               </div>
             </div>
             <!--/.col-->
           </div>
           <!--/.row-->
           <div class="chart-wrapper" style="height:300px;margin-top:40px;">
-            <canvas style="height:300px;margin-top:40px;" *ngIf="docInfoVenteChiffreAffaireLabels.length > 1" baseChart class="chart"
-              [labels]="docInfoVenteChiffreAffaireLabels" [datasets]="docInfoVenteChiffreAffaireValues" [options]="barChartOptions"
+            <canvas style="height:300px;margin-top:40px;" *ngIf="docInfoVenteChiffreAffaireLabelsMonths.length > 1" baseChart class="chart"
+              [labels]="docInfoVenteChiffreAffaireLabelsMonths" [datasets]="docInfoVenteChiffreAffaireValuesMonths" [options]="barChartOptions"
               [legend]="false" [colors]="colors" chartType="bar"></canvas>
           </div>
         </div>
@@ -184,96 +176,6 @@
     </div>
   </div>
   <!--/.card-->
-  <div class="row">
-    <div class="col-sm-6 col-lg-3">
-      <div class="brand-card">
-        <div class="brand-card-header bg-facebook">
-          <i class="fa fa-facebook"></i>
-          <div class="chart-wrapper">
-            <canvas baseChart class="chart" [datasets]="brandBoxChartData1" [labels]="brandBoxChartLabels" [options]="brandBoxChartOptions"
-              [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend" [chartType]="brandBoxChartType"></canvas>
-          </div>
-        </div>
-        <div class="brand-card-body">
-          <div>
-            <div class="text-value">89k</div>
-            <div class="text-uppercase text-muted small">friends</div>
-          </div>
-          <div>
-            <div class="text-value">459</div>
-            <div class="text-uppercase text-muted small">feeds</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--/.col-->
-    <div class="col-sm-6 col-lg-3">
-      <div class="brand-card">
-        <div class="brand-card-header bg-twitter">
-          <i class="fa fa-twitter"></i>
-          <div class="chart-wrapper">
-            <canvas baseChart class="chart" [datasets]="brandBoxChartData2" [labels]="brandBoxChartLabels" [options]="brandBoxChartOptions"
-              [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend" [chartType]="brandBoxChartType"></canvas>
-          </div>
-        </div>
-        <div class="brand-card-body">
-          <div>
-            <div class="text-value">973k</div>
-            <div class="text-uppercase text-muted small">followers</div>
-          </div>
-          <div>
-            <div class="text-value">1.792</div>
-            <div class="text-uppercase text-muted small">tweets</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--/.col-->
-    <div class="col-sm-6 col-lg-3">
-      <div class="brand-card">
-        <div class="brand-card-header bg-linkedin">
-          <i class="fa fa-linkedin"></i>
-          <div class="chart-wrapper">
-            <canvas baseChart class="chart" [datasets]="brandBoxChartData3" [labels]="brandBoxChartLabels" [options]="brandBoxChartOptions"
-              [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend" [chartType]="brandBoxChartType"></canvas>
-          </div>
-        </div>
-        <div class="brand-card-body">
-          <div>
-            <div class="text-value">500+</div>
-            <div class="text-uppercase text-muted small">contacts</div>
-          </div>
-          <div>
-            <div class="text-value">292</div>
-            <div class="text-uppercase text-muted small">feeds</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--/.col-->
-    <div class="col-sm-6 col-lg-3">
-      <div class="brand-card">
-        <div class="brand-card-header bg-google-plus">
-          <i class="fa fa-google-plus"></i>
-          <div class="chart-wrapper">
-            <canvas baseChart class="chart" [datasets]="brandBoxChartData4" [labels]="brandBoxChartLabels" [options]="brandBoxChartOptions"
-              [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend" [chartType]="brandBoxChartType"></canvas>
-          </div>
-        </div>
-        <div class="brand-card-body">
-          <div>
-            <div class="text-value">894</div>
-            <div class="text-uppercase text-muted small">followers</div>
-          </div>
-          <div>
-            <div class="text-value">92</div>
-            <div class="text-uppercase text-muted small">circles</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--/.col-->
-  </div>
   <!--/.row-->
   <div class="row">
     <div class="col-md-12">

@@ -54,14 +54,14 @@ export class UpdatePwdComponent implements OnInit, OnDestroy {
           // this.successfulSave = false;
           if (errors.status === 400) {
               // handle validation error
-              const validationErrorDictionary = JSON.parse(errors.text());
+              const validationErrorDictionary = errors.error;
               for (const fieldName in validationErrorDictionary) {
                   if (validationErrorDictionary.hasOwnProperty(fieldName)) {
                     this.errors.push(validationErrorDictionary[fieldName]);
                   }
               }
           } else {
-            this.errors.push(errors.text());
+            this.errors.push(errors.error);
           }});
     }
     this.isRequesting = false;

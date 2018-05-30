@@ -78,18 +78,19 @@ export class UserService extends BaseService {
   }
 
   resetPassword(email: string) {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json');
+
     return this.http
-      .post(this.baseUrl + 'api/auth/forgotpassword', JSON.stringify({email}))
+      .post(this.baseUrl + 'api/auth/forgotpassword', JSON.stringify({email}), {headers: headers})
       .pipe(map(res => true), catchError(this.handleError)).source;
   }
 
   updatePassword(email: string, newPassword: string, passwordConfirmation: string, token: string) {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json');
     return this.http
-      .post(this.baseUrl + 'api/auth/updatepassword', JSON.stringify({email, newPassword, passwordConfirmation, token}))
+      .post(this.baseUrl + 'api/auth/updatepassword', JSON.stringify({email, newPassword, passwordConfirmation, token}), {headers: headers})
       .pipe(map(res => true), catchError(this.handleError)).source;
   }
 

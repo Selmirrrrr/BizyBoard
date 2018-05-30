@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                   }
               }
           } else {
-            this.errors.push(errors.text());
+            this.errors.push(errors.error);
           }});
     }
   }
