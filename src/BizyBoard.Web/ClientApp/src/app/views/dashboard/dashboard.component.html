@@ -27,7 +27,7 @@
         </div>
         <div class="brand-card-body" style="height:75px;">
           <div>
-            <div *ngIf="pendingPayments" class="text-value">{{pendingPayments.docs}} CHF</div>
+            <div *ngIf="pendingPayments" class="text-value">{{pendingPayments.docs}}</div>
             <i *ngIf="pendingPayments == null" class="fa fa-spinner fa-spin text-value"></i>
             <div class="text-uppercase text-muted small">Docs</div>
           </div>
@@ -47,7 +47,7 @@
         </div>
         <div class="brand-card-body" style="height:75px;">
           <div>
-            <div *ngIf="paymentsCalendar" class="text-value">{{paymentsCalendar.docs}} CHF</div>
+            <div *ngIf="paymentsCalendar" class="text-value">{{paymentsCalendar.docs}}</div>
             <i *ngIf="paymentsCalendar == null" class="fa fa-spinner fa-spin text-value"></i>
             <div class="text-uppercase text-muted small">Docs</div>
           </div>
@@ -176,8 +176,8 @@
               <thead>
                 <tr>
                   <th>Client</th>
-                  <th>Documents</th>
                   <th>Montant</th>
+                  <th>Documents</th>
                 </tr>
               </thead>
               <tbody>
