@@ -48,6 +48,22 @@ export class DataService extends BaseService {
   public getDocInfoVenteChiffreAffaireMonths(nbMonths: number): Observable<LabelValue[]> {
     return this.http.get<LabelValue[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaireMonths/' + nbMonths);
   }
+
+  public getSalesThisAndPastYearMonth(): any {
+    return this.http.get(this.baseUrl + 'api/board/GetSalesThisAndPastYearMonth');
+  }
+
+  public getSalesThisAndPastYear(): any {
+    return this.http.get(this.baseUrl + 'api/board/GetSalesThisAndPastYear');
+  }
+
+  public GetPaymentsCalendar(): any {
+    return this.http.get(this.baseUrl + 'api/board/GetPaymentsCalendar');
+  }
+
+  public getPendingPayments(): any {
+    return this.http.get(this.baseUrl + 'api/board/GetPendingPayments');
+  }
 }
 
 export interface LabelValue {
