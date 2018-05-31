@@ -15,11 +15,6 @@ import { ResetPwdComponent } from './views/auth/reset-pwd/reset-pwd.component';
 
 export const routes: Routes = [
   {
-    path: '',
-    component: IndexComponent,
-    pathMatch: 'full',
-  },
-  {
     path: '404',
     component: P404Component,
     data: {
@@ -74,6 +69,11 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
+        loadChildren: './views/dashboard/dashboard.module#DashboardModule',
+        canActivate: [AuthGuard]
+      },
+      {
+        path: '',
         loadChildren: './views/dashboard/dashboard.module#DashboardModule',
         canActivate: [AuthGuard]
       },

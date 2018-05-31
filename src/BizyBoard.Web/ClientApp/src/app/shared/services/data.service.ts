@@ -41,16 +41,48 @@ export class DataService extends BaseService {
       map(res => res, catchError(this.handleError)));
   }
 
-  public getDocInfoVenteChiffreAffaireYears(nbYears: number): Observable<LabelValue[]> {
-    return this.http.get<LabelValue[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaireYears/' + nbYears);
+  public getDocInfoVenteChiffreAffaireYears(nbYears: number): Observable<YearSales[]> {
+    return this.http.get<YearSales[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaireYears/' + nbYears);
   }
 
   public getDocInfoVenteChiffreAffaireMonths(nbMonths: number): Observable<LabelValue[]> {
     return this.http.get<LabelValue[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaireMonths/' + nbMonths);
+  }
+
+  public getSalesThisAndPastYearMonth(): any {
+    return this.http.get(this.baseUrl + 'api/board/GetSalesThisAndPastYearMonth');
+  }
+
+  public getSalesThisAndPastYear(): any {
+    return this.http.get(this.baseUrl + 'api/board/GetSalesThisAndPastYear');
+  }
+
+  public getPaymentsCalendar(): any {
+    return this.http.get(this.baseUrl + 'api/board/GetPaymentsCalendar');
+  }
+
+  public getPendingPayments(): any {
+    return this.http.get(this.baseUrl + 'api/board/GetPendingPayments');
+  }
+
+  public getBadPayersList(nb: number): Observable<BadPayer[]> {
+    return this.http.get<BadPayer[]>(this.baseUrl + 'api/board/GetBadPayersList/' + nb);
   }
 }
 
 export interface LabelValue {
   label: string;
   value: number;
+}
+
+export interface YearSales {
+  label: string;
+  year: number;
+  yearToDate: number;
+}
+
+export interface BadPayer {
+  address: string;
+  amount: number;
+  count: number;
 }

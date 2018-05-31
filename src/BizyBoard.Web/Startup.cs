@@ -2,6 +2,7 @@ namespace BizyBoard.Web
 {
     using AutoMapper;
     using System;
+    using System.IO;
     using System.Net;
     using System.Text;
     using Auth;
@@ -18,6 +19,7 @@ namespace BizyBoard.Web
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.AspNetCore.SpaServices.AngularCli;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -180,6 +182,16 @@ namespace BizyBoard.Web
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "BizyBoard API V1");
+            });
+
+            app.UseRouter(r =>
+            {
+                r.MapGet(".well-known/acme-challenge/{id}", async (request, response, routeData) =>
+                {
+                    var id = routeData.Values["id"] as string;
+                    var file = Path.Combine(env.WebRootPath, ".well-known","acme-challenge", id);
+                    await response.SendFileAsync(file);
+                });
             });
 
             app.UseMvc(routes =>

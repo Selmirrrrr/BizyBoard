@@ -27,8 +27,6 @@ export class RegisterComponent implements OnInit {
     this.submitted = true;
     this.isRequesting = true;
     this.errors = [];
-    console.log(this.selectedDossier.number)
-    console.log(this.selectedDossier.exercice)
     if (valid) {
       this.userService.register(value.email,
         value.password,
