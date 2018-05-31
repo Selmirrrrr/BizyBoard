@@ -32,7 +32,7 @@
                   </alert>
                   <div class="row">
                     <div class="col-6">
-                      <button type="submit" class="btn btn-primary px-4" [disabled]="f.invalid || isRequesting">Connexion <i *ngIf="isRequesting" class="fa fa-spinner fa-spin"></i></button>
+                      <button type="submit" class="btn btn-primary px-4" [disabled]="isRequesting">Connexion <i *ngIf="isRequesting" class="fa fa-spinner fa-spin"></i></button>
                     </div>
                     <div class="col-6 text-right">
                       <a [routerLink]='["/resetpwd"]'>
