@@ -24,17 +24,16 @@
       <div class="brand-card">
         <div class="brand-card-header bg-google-plus" style="height:60px;">
           <span class="text-value text-white">Paiements en retard</span>
-
         </div>
         <div class="brand-card-body" style="height:75px;">
           <div>
-              <div *ngIf="pendingPayments" class="text-value">{{pendingPayments.docs}} CHF</div>
-              <i *ngIf="pendingPayments == null" class="fa fa-spinner fa-spin text-value"></i>
+            <div *ngIf="pendingPayments" class="text-value">{{pendingPayments.docs}} CHF</div>
+            <i *ngIf="pendingPayments == null" class="fa fa-spinner fa-spin text-value"></i>
             <div class="text-uppercase text-muted small">Docs</div>
           </div>
           <div>
-              <div *ngIf="pendingPayments" class="text-value">{{pendingPayments.amount}} CHF</div>
-              <i *ngIf="pendingPayments == null" class="fa fa-spinner fa-spin text-value"></i>
+            <div *ngIf="pendingPayments" class="text-value">{{pendingPayments.amount}} CHF</div>
+            <i *ngIf="pendingPayments == null" class="fa fa-spinner fa-spin text-value"></i>
             <div class="text-uppercase text-muted small">CHF</div>
           </div>
         </div>
@@ -45,17 +44,16 @@
       <div class="brand-card">
         <div class="brand-card-header bg-twitter" style="height:60px;">
           <span class="text-value text-white">Paiements à venir</span>
-
         </div>
         <div class="brand-card-body" style="height:75px;">
           <div>
-              <div *ngIf="paymentsCalendar" class="text-value">{{paymentsCalendar.docs}} CHF</div>
-              <i *ngIf="paymentsCalendar == null" class="fa fa-spinner fa-spin text-value"></i>
+            <div *ngIf="paymentsCalendar" class="text-value">{{paymentsCalendar.docs}} CHF</div>
+            <i *ngIf="paymentsCalendar == null" class="fa fa-spinner fa-spin text-value"></i>
             <div class="text-uppercase text-muted small">Docs</div>
           </div>
           <div>
-              <div *ngIf="paymentsCalendar" class="text-value">{{paymentsCalendar.amount}} CHF</div>
-              <i *ngIf="paymentsCalendar == null" class="fa fa-spinner fa-spin text-value"></i>
+            <div *ngIf="paymentsCalendar" class="text-value">{{paymentsCalendar.amount}} CHF</div>
+            <i *ngIf="paymentsCalendar == null" class="fa fa-spinner fa-spin text-value"></i>
             <div class="text-uppercase text-muted small">CHF</div>
           </div>
         </div>
@@ -66,17 +64,16 @@
       <div class="brand-card">
         <div class="brand-card-header bg-xing" style="height:60px;">
           <span class="text-value text-white">Chiffre d'affaires mensuel</span>
-
         </div>
         <div class="brand-card-body" style="height:75px;">
           <div>
-              <div *ngIf="salesThisAndPastYearMonth" class="text-value">{{salesThisAndPastYearMonth.salesThisMonth}} CHF</div>
-              <i *ngIf="salesThisAndPastYearMonth == null" class="fa fa-spinner fa-spin text-value"></i>
+            <div *ngIf="salesThisAndPastYearMonth" class="text-value">{{salesThisAndPastYearMonth.salesThisMonth}} CHF</div>
+            <i *ngIf="salesThisAndPastYearMonth == null" class="fa fa-spinner fa-spin text-value"></i>
             <div class="text-uppercase text-muted small">ce mois</div>
           </div>
           <div>
-              <div *ngIf="salesThisAndPastYearMonth" class="text-value">{{salesThisAndPastYearMonth.salesPastYearMonth}} CHF</div>
-              <i *ngIf="salesThisAndPastYearMonth == null" class="fa fa-spinner fa-spin text-value"></i>
+            <div *ngIf="salesThisAndPastYearMonth" class="text-value">{{salesThisAndPastYearMonth.salesPastYearMonth}} CHF</div>
+            <i *ngIf="salesThisAndPastYearMonth == null" class="fa fa-spinner fa-spin text-value"></i>
             <div class="text-uppercase text-muted small">même mois un an avant</div>
           </div>
         </div>
@@ -95,6 +92,9 @@
             <!--/.col-->
             <div class="col-sm-7 d-none d-md-block">
               <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                <label *ngIf="docInfoVenteChiffreAffaireLabelsYears.length < 1" class="btn btn-outline-secondary">
+                  <i class="fa fa-spinner fa-spin text-value"></i>
+                </label>
                 <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaireMonths(3)"
                   btnRadio="3">3 mois</label>
                 <label class="btn btn-outline-secondary" [(ngModel)]="salesChartMonths" (ngModelChange)="getDocInfoVenteChiffreAffaireMonths(6)"
@@ -110,6 +110,86 @@
             <canvas style="height:300px;margin-top:40px;" *ngIf="docInfoVenteChiffreAffaireLabelsMonths.length > 1" baseChart class="chart"
               [labels]="docInfoVenteChiffreAffaireLabelsMonths" [datasets]="docInfoVenteChiffreAffaireValuesMonths" [options]="barChartOptions"
               [legend]="false" [colors]="colors" chartType="bar"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-5">
+              <h4 class="card-title mb-0">Chiffre d'affaires annuel</h4>
+            </div>
+            <!--/.col-->
+            <div class="col-sm-7 d-none d-md-block">
+              <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                <label *ngIf="docInfoVenteChiffreAffaireLabelsYears.length < 1" class="btn btn-outline-secondary">
+                  <i class="fa fa-spinner fa-spin text-value"></i>
+                </label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartYears" (ngModelChange)="getDocInfoVenteChiffreAffaireYears(3)"
+                  btnRadio="3">3 ans</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartYears" (ngModelChange)="getDocInfoVenteChiffreAffaireYears(5)"
+                  btnRadio="5">6 ans</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="salesChartYears" (ngModelChange)="getDocInfoVenteChiffreAffaireYears(10)"
+                  btnRadio="10">10 ans</label>
+              </div>
+            </div>
+            <!--/.col-->
+          </div>
+          <!--/.row-->
+          <div class="chart-wrapper" style="height:300px;margin-top:40px;">
+            <canvas style="height:300px;margin-top:40px;" *ngIf="docInfoVenteChiffreAffaireLabelsYears.length > 1" baseChart class="chart"
+              [labels]="docInfoVenteChiffreAffaireLabelsYears" [datasets]="docInfoVenteChiffreAffaireValuesYears" [options]="barChartOptions"
+              [legend]="false" [colors]="colors" chartType="bar"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-5">
+              <h4 class="card-title mb-0">Mauvais payeurs</h4>
+            </div>
+            <!--/.col-->
+            <div class="col-sm-7 d-none d-md-block">
+              <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                <label *ngIf="badPayersList.length < 1" class="btn btn-outline-secondary">
+                  <i class="fa fa-spinner fa-spin text-value"></i>
+                </label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="badPayersNb" (ngModelChange)="getBadPayersList(10)" btnRadio="10">Top 10</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="badPayersNb" (ngModelChange)="getBadPayersList(25)" btnRadio="25">Top 25</label>
+                <label class="btn btn-outline-secondary" [(ngModel)]="badPayersNb" (ngModelChange)="getBadPayersList(0)" btnRadio="0">Tous</label>
+              </div>
+            </div>
+            <!--/.col-->
+          </div>
+          <!--/.row-->
+          <div class="chart-wrapper" style="height:300px;margin-top:40px;">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Documents</th>
+                  <th>Montant</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of badPayersList;">
+                  <td>{{item.address}}</td>
+                  <td>
+                    <span class="badge badge-danger">{{item.amount}} CHF</span>
+                  </td>
+                  <td>{{item.count}}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

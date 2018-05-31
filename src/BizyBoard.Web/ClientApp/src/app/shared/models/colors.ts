@@ -18,6 +18,16 @@ export class ChartColors {
         pointHoverBorderColor: 'fff',
         borderWidth: 1
     };
+
+    public static Blue: IChartColor = {
+        backgroundColor: 'rgba(35,132,138,0.2)',
+        borderColor: '#158BB6',
+        pointBackgroundColor: '#1782B4',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#1782B4',
+        pointHoverBorderColor: 'fff',
+        borderWidth: 1
+    };
 }
 
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LabelValue, DataService } from '../../shared/services/data.service';
+import { LabelValue, DataService, YearSales, BadPayer } from '../../shared/services/data.service';
 import { IChartColor, ChartColors } from '../../shared/models/colors';
 
 @Component({
@@ -13,7 +13,7 @@ export class DashboardComponent {
   docInfoVenteChiffreAffaireLabelsMonths: string[] = [];
   salesChartMonths = '6';
 
-  docInfoVenteChiffreAffaireYears: LabelValue[] = [];
+  docInfoVenteChiffreAffaireYears: YearSales[] = [];
   docInfoVenteChiffreAffaireValuesYears: any;
   docInfoVenteChiffreAffaireLabelsYears: string[] = [];
   salesChartYears = '3';
@@ -23,7 +23,10 @@ export class DashboardComponent {
   paymentsCalendar: any;
   salesThisAndPastYearMonth: any;
 
-  colors: IChartColor[] = [ChartColors.Green];
+  badPayersNb = '10';
+  badPayersList: BadPayer[] = [];
+
+  colors: IChartColor[] = [ChartColors.Green, ChartColors.Blue];
   public barChartOptions: any = {
     scales: {
       yAxes: [{
@@ -48,12 +51,13 @@ export class DashboardComponent {
     this.getSalesThisAndPastYear();
     this.getPendingPayments();
     this.getPaymentsCalendar();
+    this.getBadPayersList(10);
   }
 
-  getDocInfoVenteChiffreAffaireYears(months: number) {
+  getDocInfoVenteChiffreAffaireMonths(months: number) {
     this.docInfoVenteChiffreAffaireLabelsMonths = [];
     this.dataService
-      .getDocInfoVenteChiffreAffaireYears(months)
+      .getDocInfoVenteChiffreAffaireMonths(months)
       .subscribe(data => {
         this.docInfoVenteChiffreAffaireLabelsMonths = data.map(a => a.label);
         this.docInfoVenteChiffreAffaireValuesMonths = [{ data: data.map(d => d.value), label: 'Mois' }];
@@ -64,13 +68,14 @@ export class DashboardComponent {
         });
   }
 
-  getDocInfoVenteChiffreAffaireMonths(years: number) {
+  getDocInfoVenteChiffreAffaireYears(years: number) {
     this.docInfoVenteChiffreAffaireLabelsYears = [];
     this.dataService
       .getDocInfoVenteChiffreAffaireYears(years)
       .subscribe(data => {
         this.docInfoVenteChiffreAffaireLabelsYears = data.map(a => a.label);
-        this.docInfoVenteChiffreAffaireValuesYears = [{ data: data.map(d => d.value), label: 'Année' }];
+        this.docInfoVenteChiffreAffaireValuesYears =
+        [{ data: data.map(d => d.yearToDate), label: 'Année instant T' }, { data: data.map(d => d.year), label: 'Année' }];
       },
         error => () => {
         },
@@ -104,9 +109,18 @@ export class DashboardComponent {
 
   getPaymentsCalendar() {
     this.dataService
-      .GetPaymentsCalendar()
+      .getPaymentsCalendar()
       .subscribe(data => {
         this.paymentsCalendar = data;
+      });
+  }
+
+  getBadPayersList(nb: number) {
+    this.badPayersList = [];
+    this.dataService
+      .getBadPayersList(nb)
+      .subscribe(data => {
+        this.badPayersList = data;
       });
   }
 }
