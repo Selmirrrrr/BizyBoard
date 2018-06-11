@@ -1,16 +1,13 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LabelValue, DataService, YearSales, BadPayer } from '../../shared/services/data.service';
 import { IChartColor, ChartColors } from '../../shared/models/colors';
-import { HttpClient } from '@angular/common/http';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 
 @Component({
   templateUrl: 'dashboard.component.html'
 })
 
 export class DashboardComponent {
-  baseUrl = '';
   docInfoVenteChiffreAffaireMonths: LabelValue[] = [];
   docInfoVenteChiffreAffaireValuesMonths: any;
   docInfoVenteChiffreAffaireLabelsMonths: string[] = [];
@@ -47,39 +44,14 @@ export class DashboardComponent {
     }
   };
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string, private dataService: DataService) {
-    this.baseUrl = baseUrl;
-    this.getAllData();
+  constructor(private dataService: DataService) {
+    this.getSalesThisAndPastYearMonth();
+    this.getSalesThisAndPastYear();
+    this.getPendingPayments();
+    this.getPaymentsCalendar();
+    this.getDocInfoVenteChiffreAffaireYears(3);
+    this.getDocInfoVenteChiffreAffaireMonths(6);
     this.getBadPayersList(10);
-  }
-
-  getAllData() {
-      forkJoin(
-        this.http.get<YearSales[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaireYears/' + 3),
-        this.http.get<LabelValue[]>(this.baseUrl + 'api/board/GetDocInfoVenteChiffreAffaireMonths/' + 3),
-        this.http.get(this.baseUrl + 'api/board/GetSalesThisAndPastYearMonth'),
-        this.http.get(this.baseUrl + 'api/board/GetSalesThisAndPastYear'),
-        this.http.get(this.baseUrl + 'api/board/GetPaymentsCalendar'),
-        this.http.get(this.baseUrl + 'api/board/GetPendingPayments')
-    ).subscribe(
-      data => {
-        this.docInfoVenteChiffreAffaireLabelsYears = data[0].map(a => a.label);
-        this.docInfoVenteChiffreAffaireValuesYears =
-        [{ data: data[0].map(d => d.yearToDate), label: 'Année instant T' }, { data: data[0].map(d => d.year), label: 'Année' }];
-
-        this.docInfoVenteChiffreAffaireLabelsMonths = data[1].map(a => a.label);
-        this.docInfoVenteChiffreAffaireValuesMonths = [{ data: data[1].map(d => d.value), label: 'Mois' }];
-
-        this.salesThisAndPastYearMonth = data[2];
-
-        this.salesThisAndPastYear = data[3];
-
-        this.pendingPayments = data[4];
-
-        this.paymentsCalendar = data[5];
-      },
-      err => console.error(err)
-    );
   }
 
   getDocInfoVenteChiffreAffaireMonths(months: number) {
