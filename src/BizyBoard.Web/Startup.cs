@@ -54,8 +54,11 @@ namespace BizyBoard.Web
             services.AddLogging();
             if (_currentEnvironment.IsProduction()) services.AddLogging(builder => builder.AddAzureWebAppDiagnostics());
 
-            services.AddDbContext<AdminDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING"), b => b.MigrationsAssembly("BizyBoard.Data")));
+            //services.AddDbContext<AdminDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
+            //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING"), b => b.MigrationsAssembly("BizyBoard.Data")));
+
+            services.AddDbContext<AdminDbContext>(options => options.UseSqlite("Filename=bizy.db"));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlite("Filename=bizy.db"));
             
             services.AddTransient<AppDbContextSeeder>();
 

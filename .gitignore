@@ -235,3 +235,4 @@ _Pvt_Extensions
 /src/.vscode/tasks.json
 
 /src/BizyBoard.Web/BizyBoard.db
+/src/BizyBoard.Web/bizy.db
